@@ -143,6 +143,7 @@ function createTray() {
     { label: 'Afficher', click: () => win && (win.show(), placeWindow()) },
     { label: 'Recharger', click: () => win && win.webContents.reload() },
     { label: 'Modifier la configuration…', click: () => shell.openPath(configPath) },
+    { label: 'Périphériques audio SteelSeries Sonar…', click: showSonarDevices },
     { label: 'Outils de développement', click: () => win && win.webContents.openDevTools({ mode: 'detach' }) },
     { type: 'separator' },
     {
@@ -158,6 +159,25 @@ function createTray() {
   tray.on('click', () => win && (win.show(), placeWindow()));
 }
 
+/** Affiche les noms des sorties connues de Sonar, à recopier dans config.json. */
+async function showSonarDevices() {
+  const { SonarClient } = require('./sonar');
+  try {
+    const client = new SonarClient();
+    const [devices, { mode, routes }] = await Promise.all([client.getOutputDevices(), client.getRedirections()]);
+    const used = new Set(Object.values(routes));
+    const lines = devices.map((d) => `${used.has(d.id) ? '▶' : '   '} ${d.friendlyName}`);
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'SteelSeries Sonar',
+      message: `Sorties audio disponibles (mode ${mode === 'stream' ? 'streamer' : 'classique'}) :`,
+      detail: `${lines.join('\n')}\n\n▶ = sortie actuellement utilisée.\nRecopiez une partie du nom dans "match" de l'action "sonar".`,
+    });
+  } catch (err) {
+    dialog.showErrorBox('SteelSeries Sonar', err.message);
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* IPC                                                                 */
 /* ------------------------------------------------------------------ */
@@ -168,10 +188,18 @@ function registerIpc() {
 
   ipcMain.handle('action:run', async (_e, action) => {
     try {
-      await actions.run(action);
-      return { ok: true };
+      const result = await actions.run(action);
+      return { ok: true, result: result && typeof result === 'object' ? result : null };
     } catch (err) {
       console.error('[action]', err);
+      return { ok: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle('action:state', async (_e, action) => {
+    try {
+      return { ok: true, state: await actions.state(action) };
+    } catch (err) {
       return { ok: false, error: err.message };
     }
   });

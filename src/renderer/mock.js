@@ -72,14 +72,25 @@
     listeners.stats.forEach((cb) => cb(last));
   }, 1000);
 
+  let sonarIndex = 0;
+  const sonarState = (action) => {
+    const t = action.toggle[sonarIndex];
+    return typeof t === 'string' ? { label: t, deviceName: t } : { label: t.label || t.match, icon: t.icon, deviceName: t.match };
+  };
+
   window.edge = {
     isElectron: false,
     getConfig: async () => strip(await (await fetch('/config.example.json')).json()),
     getLastStats: async () => last,
     runAction: async (action) => {
       console.log('[preview] action', action);
+      if (action.type === 'sonar' && action.toggle) {
+        sonarIndex = (sonarIndex + 1) % action.toggle.length;
+        return { ok: true, result: sonarState(action) };
+      }
       return { ok: true };
     },
+    getActionState: async (action) => ({ ok: true, state: action.type === 'sonar' ? sonarState(action) : null }),
     getAppIcon: async () => null,
     openConfig: async () => {},
     onStats: (cb) => listeners.stats.push(cb),

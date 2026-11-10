@@ -42,7 +42,7 @@
           { "label": "Capture", "icon": "📸", "action": { "type": "hotkey", "keys": "win+shift+s" } },
           { "label": "Gest. tâches", "icon": "📊", "action": { "type": "hotkey", "keys": "ctrl+shift+esc" } },
           { "label": "Bureau", "icon": "🖥️", "action": { "type": "hotkey", "keys": "win+d" } },
-          { "label": "Calculatrice", "icon": "🧮", "action": { "type": "app", "path": "calc.exe" } },
+          { "label": "Sortie audio", "icon": "🔈", "action": { "type": "sonar", "toggle": [ { "match": "Haut-parleurs", "label": "Enceintes", "icon": "🔊" }, { "match": "Arctis", "label": "Casque", "icon": "🎧" } ] } },
           { "label": "Verrouiller", "icon": "🔒", "action": { "type": "command", "command": "rundll32.exe user32.dll,LockWorkStation" } },
           { "label": "Média", "icon": "🎵", "color": "#2a2a40", "action": { "type": "page", "page": 1 } }
         ]

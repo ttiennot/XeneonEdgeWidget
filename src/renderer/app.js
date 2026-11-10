@@ -8,6 +8,7 @@
     config: null,
     page: 0,
     iconCache: new Map(),
+    statefulKeys: [],
     stats: null,
     webview: null,
     discordUrl: null,
@@ -149,6 +150,7 @@
 
     const grid = $('#deck-grid');
     grid.textContent = '';
+    state.statefulKeys = [];
     grid.style.gridTemplateColumns = `repeat(${deck.columns}, minmax(0, 1fr))`;
     grid.style.gridTemplateRows = `repeat(${deck.rows}, minmax(0, 1fr))`;
 
@@ -174,8 +176,48 @@
       el.append(icon, label);
       el.title = button.label || '';
       renderIcon(icon, button);
-      el.addEventListener('click', () => press(el, button.action));
+      if (hasState(button.action)) {
+        const sub = document.createElement('span');
+        sub.className = 'key-sub';
+        sub.textContent = button.label || '';
+        label.textContent = '…';
+        el.appendChild(sub);
+        state.statefulKeys.push({ el, button });
+      }
+      el.addEventListener('click', () => press(el, button.action, button));
       grid.appendChild(el);
+    }
+    refreshKeyStates();
+  }
+
+  /* Boutons à état (ex. sortie audio Sonar) : affichent la valeur courante. */
+
+  const hasState = (action) => !!(action && action.type === 'sonar' && api.getActionState);
+
+  function applyKeyState(el, button, st) {
+    const label = el.querySelector('.key-label');
+    const icon = el.querySelector('.key-icon');
+    if (st && (st.label || st.deviceName)) {
+      label.textContent = st.label || st.deviceName;
+      el.title = st.deviceName ? `${button.label || ''} : ${st.deviceName}` : button.label || '';
+      renderIcon(icon, { ...button, icon: st.icon || button.icon });
+      el.classList.remove('stale');
+    } else {
+      label.textContent = '?';
+      el.classList.add('stale');
+    }
+  }
+
+  async function refreshKeyStates() {
+    for (const { el, button } of state.statefulKeys) {
+      if (!el.isConnected) continue;
+      try {
+        const res = await api.getActionState(button.action);
+        applyKeyState(el, button, res && res.ok ? res.state : null);
+        if (res && !res.ok) el.title = res.error;
+      } catch (_) {
+        applyKeyState(el, button, null);
+      }
     }
   }
 
@@ -205,13 +247,19 @@
     return false;
   }
 
-  async function press(el, action) {
+  async function press(el, action, button = {}) {
     if (!action) return;
     try {
       if (runLocal(action)) return;
       if (action.type === 'multi') (action.actions || []).forEach((a) => runLocal(a));
       const res = await api.runAction(action);
-      if (res && res.ok) flash(el, 'ok');
+      if (res && res.ok) {
+        flash(el, 'ok');
+        if (res.result && hasState(action)) {
+          applyKeyState(el, button, res.result);
+          toast(`Sortie audio : ${res.result.label || res.result.deviceName}`);
+        }
+      }
       else {
         flash(el, 'error');
         toast(res && res.error ? res.error : 'Échec de l’action', 'error');
@@ -545,6 +593,8 @@
     bindChartHover();
     tickClock();
     setInterval(tickClock, 1000);
+    // La sortie peut aussi être changée depuis SteelSeries GG : on resynchronise régulièrement.
+    setInterval(refreshKeyStates, 10000);
     api.onStats(updateStats);
     api.onConfig((c) => {
       applyConfig(c);

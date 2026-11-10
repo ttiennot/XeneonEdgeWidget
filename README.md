@@ -124,12 +124,37 @@ L'écran Edge peut aussi être monté en **portrait** (720×2560) : les panneaux
 | `page` | `page` (index ou nom) | `{ "type": "page", "page": "Média" }` |
 | `discord` | `url` | `{ "type": "discord", "url": "https://discord.com/channels/123/456" }` |
 | `multi` | `actions`, `delayMs` | `{ "type": "multi", "actions": [ … ], "delayMs": 300 }` |
+| `sonar` | `toggle` ou `device`, `channels` | voir [SteelSeries Sonar](#steelseries-sonar--basculer-enceintes--casque) |
 
 Les chemins acceptent les variables d'environnement (`%LOCALAPPDATA%`, `%USERPROFILE%`…).
 
 Touches reconnues pour `hotkey` : `ctrl`, `shift`, `alt`, `win`, `a`–`z`, `0`–`9`, `f1`–`f24`, `enter`, `esc`, `tab`, `space`, `backspace`, `delete`, `insert`, `home`, `end`, `pageup`, `pagedown`, `up`, `down`, `left`, `right`, `printscreen`, `num0`–`num9`, touches multimédia, ponctuation.
 
 > Quand vous touchez l'écran Edge, le widget prend le focus. Avant d'envoyer un raccourci ou du texte, il rend automatiquement le focus à la fenêtre précédente (jeu, navigateur…), comme un vrai Stream Deck.
+
+## SteelSeries Sonar : basculer enceintes / casque
+
+Si vos sorties audio passent par **SteelSeries Sonar** (SteelSeries GG), un bouton peut changer le périphérique de sortie de Sonar. Chaque appui passe à la sortie suivante de la liste, et le bouton affiche la sortie active (il se resynchronise toutes les 10 s si vous la changez depuis GG).
+
+```json
+{
+  "label": "Sortie audio",
+  "action": {
+    "type": "sonar",
+    "toggle": [
+      { "match": "Haut-parleurs", "label": "Enceintes", "icon": "🔊" },
+      { "match": "Arctis", "label": "Casque", "icon": "🎧" }
+    ]
+  }
+}
+```
+
+- `match` : une partie du nom Windows du périphérique (casse et accents ignorés). Pour voir les noms exacts : menu de l'icône de notification > *Périphériques audio SteelSeries Sonar…*, ou `npm run sonar-devices`.
+- `label` / `icon` : ce qu'affiche le bouton quand cette sortie est active.
+- `device` à la place de `toggle` : sélectionne toujours la même sortie (`{ "type": "sonar", "device": "Arctis" }`).
+- `channels` (facultatif) : canaux Sonar à rediriger. Par défaut les 4 canaux de sortie `game`, `chat`, `media`, `aux` en mode classique ; en mode streamer, le mix personnel `monitoring` (ce que vous entendez). Le micro n'est jamais modifié.
+
+SteelSeries GG doit être lancé avec Sonar activé. Le widget utilise l'API locale de Sonar, qui n'est pas documentée officiellement par SteelSeries : une mise à jour de GG pourrait la modifier.
 
 ## Développement
 
@@ -142,7 +167,7 @@ npm run preview   # interface seule dans un navigateur, avec données simulées 
 ```
 
 ```bash
-npm test          # tests unitaires (analyse LibreHardwareMonitor / nvidia-smi, raccourcis, configuration)
+npm test          # tests unitaires (LibreHardwareMonitor / nvidia-smi, raccourcis, configuration, Sonar)
 ```
 
 Structure :
@@ -151,6 +176,7 @@ Structure :
 src/main.js          fenêtre plein écran, détection de l'écran, icône de notification, IPC
 src/stats.js         collecte des statistiques (LibreHardwareMonitor, nvidia-smi, systeminformation)
 src/actions.js       actions du Stream Deck (assistant PowerShell persistant pour le clavier)
+src/sonar.js         pilotage de SteelSeries Sonar (changement de sortie audio)
 src/config.js        chargement / validation / rechargement à chaud de config.json
 src/preload.js       pont sécurisé entre l'interface et le processus principal
 src/renderer/        interface (HTML / CSS / JS sans framework)

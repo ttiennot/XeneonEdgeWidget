@@ -12,11 +12,13 @@
  *  - media   { key: "playpause" }      touche multimédia (playpause, next, prev, stop, volumeup, volumedown, mute)
  *  - text    { text }                  tape un texte
  *  - multi   { actions: [...], delayMs? } enchaîne plusieurs actions
+ *  - sonar   { toggle: [...] } | { device } change la sortie audio de SteelSeries Sonar (voir sonar.js)
  *  (page et discord sont gérées directement par l'interface)
  */
 
 const { spawn, exec } = require('child_process');
 const path = require('path');
+const { SonarClient } = require('./sonar');
 
 /* ------------------------------------------------------------------ */
 /* Codes de touches virtuelles Windows                                 */
@@ -250,6 +252,8 @@ function runFile(cmd, args) {
 
 function createActionRunner({ shell, ownPid = process.pid, platform = process.platform }) {
   const keyHelper = platform === 'win32' ? new WindowsKeyHelper(ownPid) : null;
+  let sonarClient = null;
+  const sonar = () => (sonarClient = sonarClient || new SonarClient());
   if (keyHelper) keyHelper.ensure(); // pré-chargement : la compilation C# prend ~1 s
 
   const sendHotkey = async (keys) => {
@@ -335,6 +339,8 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
         }
         return undefined;
       }
+      case 'sonar':
+        return sonar().run(action);
       case 'page':
       case 'discord':
         return undefined; // gérées par l'interface
@@ -343,8 +349,15 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
     }
   };
 
+  /** État courant à afficher sur un bouton (null si le type n'a pas d'état). */
+  const state = async (action) => {
+    if (action && action.type === 'sonar') return sonar().state(action);
+    return null;
+  };
+
   return {
     run,
+    state,
     dispose: () => keyHelper && keyHelper.dispose(),
   };
 }

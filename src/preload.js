@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('edge', {
   getConfig: () => ipcRenderer.invoke('config:get'),
   getLastStats: () => ipcRenderer.invoke('stats:last'),
   runAction: (action) => ipcRenderer.invoke('action:run', action),
+  getActionState: (action) => ipcRenderer.invoke('action:state', action),
   getAppIcon: (filePath) => ipcRenderer.invoke('icon:get', filePath),
   openConfig: () => ipcRenderer.invoke('config:open'),
   onStats: (cb) => subscribe('stats:update', cb),
