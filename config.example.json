@@ -1,0 +1,74 @@
+{
+  "display": {
+    "_comment": "auto = détecte l'écran 2560x720 (ou 720x2560). Sinon mettez l'index de l'écran (0, 1, 2...).",
+    "target": "auto",
+    "alwaysOnTop": false,
+    "zoom": 1
+  },
+  "autostart": false,
+  "layout": {
+    "_comment": "Ordre et largeur relative des panneaux. Retirez un panneau pour le masquer.",
+    "panels": ["deck", "stats", "discord"],
+    "widths": [1, 1.3, 1.1]
+  },
+  "theme": {
+    "accent": "#3987e5"
+  },
+  "stats": {
+    "intervalMs": 1000,
+    "librehardwaremonitor": {
+      "_comment": "LibreHardwareMonitor > Options > Remote Web Server > Run. Fournit les températures CPU/GPU précises.",
+      "enabled": true,
+      "url": "http://localhost:8085/data.json"
+    },
+    "nvidiaSmi": true,
+    "disks": [],
+    "tempWarning": 70,
+    "tempCritical": 85
+  },
+  "deck": {
+    "columns": 4,
+    "rows": 3,
+    "pages": [
+      {
+        "name": "Principal",
+        "buttons": [
+          { "label": "Discord", "icon": "💬", "color": "#5865f2", "action": { "type": "app", "path": "%LOCALAPPDATA%\\Discord\\Update.exe", "args": ["--processStart", "Discord.exe"] } },
+          { "label": "Steam", "icon": "🎮", "color": "#1b2838", "action": { "type": "url", "url": "steam://open/games" } },
+          { "label": "Navigateur", "icon": "🌐", "action": { "type": "url", "url": "https://www.google.com" } },
+          { "label": "Téléchargés", "icon": "📁", "action": { "type": "folder", "path": "%USERPROFILE%\\Downloads" } },
+          { "label": "Micro muet", "icon": "🎙️", "color": "#d03b3b", "action": { "type": "hotkey", "keys": "ctrl+shift+m" } },
+          { "label": "Sourdine", "icon": "🎧", "action": { "type": "hotkey", "keys": "ctrl+shift+d" } },
+          { "label": "Capture", "icon": "📸", "action": { "type": "hotkey", "keys": "win+shift+s" } },
+          { "label": "Gest. tâches", "icon": "📊", "action": { "type": "hotkey", "keys": "ctrl+shift+esc" } },
+          { "label": "Bureau", "icon": "🖥️", "action": { "type": "hotkey", "keys": "win+d" } },
+          { "label": "Calculatrice", "icon": "🧮", "action": { "type": "app", "path": "calc.exe" } },
+          { "label": "Verrouiller", "icon": "🔒", "action": { "type": "command", "command": "rundll32.exe user32.dll,LockWorkStation" } },
+          { "label": "Média", "icon": "🎵", "color": "#2a2a40", "action": { "type": "page", "page": 1 } }
+        ]
+      },
+      {
+        "name": "Média",
+        "buttons": [
+          { "label": "Précédent", "icon": "⏮️", "action": { "type": "media", "key": "prev" } },
+          { "label": "Lecture / Pause", "icon": "⏯️", "action": { "type": "media", "key": "playpause" } },
+          { "label": "Suivant", "icon": "⏭️", "action": { "type": "media", "key": "next" } },
+          { "label": "Stop", "icon": "⏹️", "action": { "type": "media", "key": "stop" } },
+          { "label": "Volume -", "icon": "🔉", "action": { "type": "media", "key": "volumedown" } },
+          { "label": "Muet", "icon": "🔇", "action": { "type": "media", "key": "mute" } },
+          { "label": "Volume +", "icon": "🔊", "action": { "type": "media", "key": "volumeup" } },
+          { "label": "Spotify", "icon": "🎧", "color": "#1db954", "action": { "type": "url", "url": "spotify:" } },
+          { "label": "GG", "icon": "💬", "action": { "type": "text", "text": "GG WP !" } },
+          { "label": "Macro", "icon": "⚡", "action": { "type": "multi", "delayMs": 300, "actions": [ { "type": "media", "key": "mute" }, { "type": "hotkey", "keys": "win+d" } ] } },
+          { },
+          { "label": "Retour", "icon": "↩️", "color": "#2a2a40", "action": { "type": "page", "page": 0 } }
+        ]
+      }
+    ]
+  },
+  "discord": {
+    "_comment": "url : client web Discord (connexion mémorisée), ou un widget serveur / overlay StreamKit (voir README).",
+    "url": "https://discord.com/channels/@me",
+    "zoom": 0.8
+  }
+}

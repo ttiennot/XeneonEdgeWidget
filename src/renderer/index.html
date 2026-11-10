@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file: https:; connect-src 'self'; frame-src https:"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Xeneon Edge Widget</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="app" class="layout">
+      <!-- Stream Deck -->
+      <section class="panel deck" data-panel="deck" aria-label="Stream Deck">
+        <header class="panel-head">
+          <h2 id="deck-title">Stream Deck</h2>
+          <nav class="pages" id="deck-pages" aria-label="Pages"></nav>
+        </header>
+        <div class="deck-grid" id="deck-grid"></div>
+      </section>
+
+      <!-- Statistiques système -->
+      <section class="panel stats" data-panel="stats" aria-label="Système">
+        <header class="stats-head">
+          <div class="clock">
+            <div class="clock-time" id="clock-time">--:--</div>
+            <div class="clock-date" id="clock-date"></div>
+          </div>
+          <div class="host">
+            <div class="host-name" id="host-name"></div>
+            <div class="host-uptime" id="host-uptime"></div>
+            <div class="sources" id="sources"></div>
+          </div>
+        </header>
+
+        <div class="hw-cards">
+          <article class="hw-card" id="card-cpu" style="--series: var(--series-cpu)">
+            <header class="hw-title"><span class="hw-tag">CPU</span><span class="hw-name" data-f="name">—</span></header>
+            <div class="hw-body">
+              <div class="ring" data-f="ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <circle class="ring-track" cx="60" cy="60" r="52" />
+                  <circle class="ring-value" cx="60" cy="60" r="52" />
+                </svg>
+                <div class="ring-label"><span data-f="load">—</span><small>utilisation</small></div>
+              </div>
+              <div class="hw-details">
+                <div class="temp">
+                  <span class="temp-value" data-f="temp">—</span>
+                  <span class="status" data-f="status"><i></i><b>—</b></span>
+                </div>
+                <dl class="kv">
+                  <div><dt>Puissance</dt><dd data-f="power">—</dd></div>
+                  <div><dt>Fréquence</dt><dd data-f="clock">—</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="cores" data-f="cores" aria-label="Charge par cœur"></div>
+          </article>
+
+          <article class="hw-card" id="card-gpu" style="--series: var(--series-gpu)">
+            <header class="hw-title"><span class="hw-tag">GPU</span><span class="hw-name" data-f="name">—</span></header>
+            <div class="hw-body">
+              <div class="ring" data-f="ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <circle class="ring-track" cx="60" cy="60" r="52" />
+                  <circle class="ring-value" cx="60" cy="60" r="52" />
+                </svg>
+                <div class="ring-label"><span data-f="load">—</span><small>utilisation</small></div>
+              </div>
+              <div class="hw-details">
+                <div class="temp">
+                  <span class="temp-value" data-f="temp">—</span>
+                  <span class="status" data-f="status"><i></i><b>—</b></span>
+                </div>
+                <dl class="kv">
+                  <div><dt>Puissance</dt><dd data-f="power">—</dd></div>
+                  <div><dt>Ventilateur</dt><dd data-f="fan">—</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">VRAM</span>
+              <div class="bar"><div class="bar-fill" data-f="vram-bar"></div></div>
+              <span class="bar-value" data-f="vram">—</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="history">
+          <div class="history-head">
+            <h3>Utilisation — 90 dernières secondes</h3>
+            <ul class="legend">
+              <li><i style="background: var(--series-cpu)"></i>CPU</li>
+              <li><i style="background: var(--series-gpu)"></i>GPU</li>
+            </ul>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="history-chart"></canvas>
+            <div class="chart-tip" id="chart-tip" hidden></div>
+          </div>
+        </div>
+
+        <div class="bottom-row">
+          <div class="mini-card">
+            <h3>Mémoire</h3>
+            <div class="big-value" data-f="mem">—</div>
+            <div class="bar"><div class="bar-fill" id="mem-bar"></div></div>
+            <div class="sub" id="mem-sub"></div>
+          </div>
+          <div class="mini-card disks-card">
+            <h3>Disques</h3>
+            <div class="disks" id="disks"></div>
+          </div>
+          <div class="mini-card">
+            <h3>Réseau</h3>
+            <div class="net">
+              <div><span class="net-arrow">↓</span><span id="net-rx">—</span></div>
+              <div><span class="net-arrow">↑</span><span id="net-tx">—</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Discord -->
+      <section class="panel discord" data-panel="discord" aria-label="Discord">
+        <header class="panel-head">
+          <h2><span class="dc-dot"></span>Discord</h2>
+          <div class="dc-tools">
+            <button type="button" data-dc="back" title="Retour" aria-label="Retour">‹</button>
+            <button type="button" data-dc="home" title="Accueil" aria-label="Accueil">⌂</button>
+            <button type="button" data-dc="reload" title="Recharger" aria-label="Recharger">↻</button>
+          </div>
+        </header>
+        <div class="discord-body" id="discord-body"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="mock.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
