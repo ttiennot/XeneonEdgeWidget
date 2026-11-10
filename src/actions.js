@@ -13,12 +13,14 @@
  *  - text    { text }                  tape un texte
  *  - multi   { actions: [...], delayMs? } enchaîne plusieurs actions
  *  - sonar   { toggle: [...] } | { device } change la sortie audio de SteelSeries Sonar (voir sonar.js)
+ *  - browser { browser, profile, urls }  ouvre un navigateur sur un profil avec des onglets (voir browser.js)
  *  (page et discord sont gérées directement par l'interface)
  */
 
 const { spawn, exec } = require('child_process');
 const path = require('path');
 const { SonarClient } = require('./sonar');
+const { createBrowserLauncher } = require('./browser');
 
 /* ------------------------------------------------------------------ */
 /* Codes de touches virtuelles Windows                                 */
@@ -254,6 +256,7 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
   const keyHelper = platform === 'win32' ? new WindowsKeyHelper(ownPid) : null;
   let sonarClient = null;
   const sonar = () => (sonarClient = sonarClient || new SonarClient());
+  const browsers = createBrowserLauncher({ expandEnv, platform });
   if (keyHelper) keyHelper.ensure(); // pré-chargement : la compilation C# prend ~1 s
 
   const sendHotkey = async (keys) => {
@@ -341,6 +344,8 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
       }
       case 'sonar':
         return sonar().run(action);
+      case 'browser':
+        return browsers.open(action);
       case 'page':
       case 'discord':
         return undefined; // gérées par l'interface

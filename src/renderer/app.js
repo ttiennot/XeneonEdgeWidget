@@ -125,7 +125,7 @@
         return;
       }
     }
-    container.textContent = { url: '🌐', folder: '📁', file: '📄', command: '⌨️', hotkey: '⌨️', media: '🎵', text: '💬', page: '📑', discord: '💬', multi: '⚡' }[action.type] || '⬛';
+    container.textContent = { url: '🌐', browser: '🧭', folder: '📁', file: '📄', command: '⌨️', hotkey: '⌨️', media: '🎵', text: '💬', page: '📑', discord: '💬', multi: '⚡' }[action.type] || '⬛';
   }
 
   function renderDeck() {

@@ -124,6 +124,7 @@ L'écran Edge peut aussi être monté en **portrait** (720×2560) : les panneaux
 | `page` | `page` (index ou nom) | `{ "type": "page", "page": "Média" }` |
 | `discord` | `url` | `{ "type": "discord", "url": "https://discord.com/channels/123/456" }` |
 | `multi` | `actions`, `delayMs` | `{ "type": "multi", "actions": [ … ], "delayMs": 300 }` |
+| `browser` | `browser`, `profile`, `urls`, `userDataDir`, `newWindow` | voir [Navigateur avec un profil](#navigateur-avec-un-profil-et-des-onglets) |
 | `sonar` | `toggle` ou `device`, `channels` | voir [SteelSeries Sonar](#steelseries-sonar--basculer-enceintes--casque) |
 
 Les chemins acceptent les variables d'environnement (`%LOCALAPPDATA%`, `%USERPROFILE%`…).
@@ -131,6 +132,36 @@ Les chemins acceptent les variables d'environnement (`%LOCALAPPDATA%`, `%USERPRO
 Touches reconnues pour `hotkey` : `ctrl`, `shift`, `alt`, `win`, `a`–`z`, `0`–`9`, `f1`–`f24`, `enter`, `esc`, `tab`, `space`, `backspace`, `delete`, `insert`, `home`, `end`, `pageup`, `pagedown`, `up`, `down`, `left`, `right`, `printscreen`, `num0`–`num9`, touches multimédia, ponctuation.
 
 > Quand vous touchez l'écran Edge, le widget prend le focus. Avant d'envoyer un raccourci ou du texte, il rend automatiquement le focus à la fenêtre précédente (jeu, navigateur…), comme un vrai Stream Deck.
+
+## Navigateur avec un profil et des onglets
+
+Un bouton peut ouvrir votre navigateur sur un profil précis (par exemple « Travail »), dans une nouvelle fenêtre, avec vos onglets de travail :
+
+```json
+{
+  "label": "Travail",
+  "icon": "💼",
+  "action": {
+    "type": "browser",
+    "browser": "chrome",
+    "profile": "Travail",
+    "urls": [
+      "https://mail.google.com",
+      "https://calendar.google.com",
+      "https://app.slack.com",
+      "https://github.com"
+    ]
+  }
+}
+```
+
+- `browser` : `chrome`, `edge`, `brave`, `vivaldi`, `firefox`, ou le chemin complet de l'exécutable.
+- `profile` : le nom du profil tel qu'il apparaît dans le navigateur (« Travail ») ou son nom de dossier (« Profile 2 »). Pour voir les profils existants : menu de l'icône de notification > *Profils des navigateurs…*, ou `npm run browser-profiles`. Le profil doit déjà exister : créez-le d'abord dans le navigateur (Chrome : icône de profil > *Ajouter*).
+- `urls` : les onglets à ouvrir. Sans `urls`, la fenêtre s'ouvre sur la page d'accueil du profil.
+- `newWindow: false` : ajoute les onglets à une fenêtre existante du profil au lieu d'en ouvrir une nouvelle.
+- `userDataDir` (Chrome, Edge, Brave, Vivaldi) : à la place de `profile`, un dossier de profil complètement séparé, créé automatiquement au premier lancement (ex. `"%LOCALAPPDATA%\\ProfilTravail"`).
+
+Si le profil indiqué n'existe pas, un message liste les profils disponibles.
 
 ## SteelSeries Sonar : basculer enceintes / casque
 
@@ -167,7 +198,7 @@ npm run preview   # interface seule dans un navigateur, avec données simulées 
 ```
 
 ```bash
-npm test          # tests unitaires (LibreHardwareMonitor / nvidia-smi, raccourcis, configuration, Sonar)
+npm test          # tests unitaires (LibreHardwareMonitor / nvidia-smi, raccourcis, configuration, Sonar, navigateurs)
 ```
 
 Structure :
@@ -177,6 +208,7 @@ src/main.js          fenêtre plein écran, détection de l'écran, icône de no
 src/stats.js         collecte des statistiques (LibreHardwareMonitor, nvidia-smi, systeminformation)
 src/actions.js       actions du Stream Deck (assistant PowerShell persistant pour le clavier)
 src/sonar.js         pilotage de SteelSeries Sonar (changement de sortie audio)
+src/browser.js       ouverture d'un navigateur sur un profil avec des onglets
 src/config.js        chargement / validation / rechargement à chaud de config.json
 src/preload.js       pont sécurisé entre l'interface et le processus principal
 src/renderer/        interface (HTML / CSS / JS sans framework)

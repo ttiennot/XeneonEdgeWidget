@@ -144,6 +144,7 @@ function createTray() {
     { label: 'Recharger', click: () => win && win.webContents.reload() },
     { label: 'Modifier la configuration…', click: () => shell.openPath(configPath) },
     { label: 'Périphériques audio SteelSeries Sonar…', click: showSonarDevices },
+    { label: 'Profils des navigateurs…', click: showBrowserProfiles },
     { label: 'Outils de développement', click: () => win && win.webContents.openDevTools({ mode: 'detach' }) },
     { type: 'separator' },
     {
@@ -176,6 +177,29 @@ async function showSonarDevices() {
   } catch (err) {
     dialog.showErrorBox('SteelSeries Sonar', err.message);
   }
+}
+
+/** Affiche les profils de chaque navigateur installé, à recopier dans "profile". */
+function showBrowserProfiles() {
+  const { createBrowserLauncher } = require('./browser');
+  const { expandEnv } = require('./actions');
+  const launcher = createBrowserLauncher({ expandEnv });
+  const sections = [];
+  for (const name of ['chrome', 'edge', 'brave', 'vivaldi', 'firefox']) {
+    try {
+      launcher.resolveBrowser(name);
+    } catch (_) {
+      continue; // non installé
+    }
+    const profiles = launcher.listProfiles(name);
+    sections.push(`${name} :\n${profiles.length ? profiles.map((p) => `   • ${p.name}${p.dir && p.dir !== p.name ? `   (${p.dir})` : ''}`).join('\n') : '   (profil par défaut uniquement)'}`);
+  }
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Profils des navigateurs',
+    message: 'Profils disponibles :',
+    detail: `${sections.join('\n\n') || 'Aucun navigateur détecté.'}\n\nUtilisez le nom du navigateur dans "browser" et le nom du profil dans "profile".`,
+  });
 }
 
 /* ------------------------------------------------------------------ */

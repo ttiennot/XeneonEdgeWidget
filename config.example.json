@@ -35,7 +35,7 @@
         "buttons": [
           { "label": "Discord", "icon": "💬", "color": "#5865f2", "action": { "type": "app", "path": "%LOCALAPPDATA%\\Discord\\Update.exe", "args": ["--processStart", "Discord.exe"] } },
           { "label": "Steam", "icon": "🎮", "color": "#1b2838", "action": { "type": "url", "url": "steam://open/games" } },
-          { "label": "Navigateur", "icon": "🌐", "action": { "type": "url", "url": "https://www.google.com" } },
+          { "label": "Travail", "icon": "💼", "color": "#1f4f8f", "action": { "type": "browser", "browser": "chrome", "profile": "Travail", "urls": [ "https://mail.google.com", "https://calendar.google.com", "https://app.slack.com", "https://github.com" ] } },
           { "label": "Téléchargés", "icon": "📁", "action": { "type": "folder", "path": "%USERPROFILE%\\Downloads" } },
           { "label": "Micro muet", "icon": "🎙️", "color": "#d03b3b", "action": { "type": "hotkey", "keys": "ctrl+shift+m" } },
           { "label": "Sourdine", "icon": "🎧", "action": { "type": "hotkey", "keys": "ctrl+shift+d" } },
