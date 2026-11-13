@@ -21,6 +21,7 @@ const { spawn, exec } = require('child_process');
 const path = require('path');
 const { SonarClient } = require('./sonar');
 const { createBrowserLauncher } = require('./browser');
+const { sendWol } = require('./wol');
 
 /* ------------------------------------------------------------------ */
 /* Codes de touches virtuelles Windows                                 */
@@ -346,6 +347,8 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
         return sonar().run(action);
       case 'browser':
         return browsers.open(action);
+      case 'wol':
+        return sendWol(action);
       case 'page':
       case 'discord':
         return undefined; // gérées par l'interface

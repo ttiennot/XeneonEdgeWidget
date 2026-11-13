@@ -11,10 +11,10 @@
     <meta name="x-icue-property" content="dataSource" data-label="tr('Data source')" data-type="combobox" data-default="'auto'"
       data-values="[{'key':'auto','value':tr('Automatic (iCUE sensors + agent)')},{'key':'icue','value':tr('iCUE sensors only')},{'key':'agent','value':tr('Agent only (LibreHardwareMonitor)')}]" />
     <meta name="x-icue-property" content="cpuTempSensor" data-label="tr('CPU temperature')" data-type="sensors-combobox"
-      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature', 'cpu-temp')" />
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature', 'package')" />
     <meta name="x-icue-property" content="cpuLoadSensor" data-label="tr('CPU load')" data-type="sensors-combobox" data-default="''" />
-    <meta name="x-icue-property" content="gpuTempSensor" data-label="tr('GPU temperature')" data-type="sensors-combobox"
-      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature', 'gpu-temp')" />
+    <!-- No reliable default sensor for the GPU: empty = value from the agent (nvidia-smi / LibreHardwareMonitor). -->
+    <meta name="x-icue-property" content="gpuTempSensor" data-label="tr('GPU temperature')" data-type="sensors-combobox" data-default="''" />
     <meta name="x-icue-property" content="gpuLoadSensor" data-label="tr('GPU load')" data-type="sensors-combobox"
       data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('load', 'gpu-load')" />
 
