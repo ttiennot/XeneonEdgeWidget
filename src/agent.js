@@ -108,7 +108,7 @@ function publicConfig(config) {
  * @param {(path: string) => Promise<string|null>} [deps.getIcon]
  * @param {string} [deps.version]
  */
-function createAgentServer({ getConfig, getStats, actions, getIcon, expandPath, version = '1.0.0' }) {
+function createAgentServer({ getConfig, getStats, actions, getIcon, expandPath, voice, version = '1.0.0' }) {
   const handler = async (req, res) => {
     const origin = req.headers.origin;
     const send = (status, body) => {
@@ -142,6 +142,53 @@ function createAgentServer({ getConfig, getStats, actions, getIcon, expandPath, 
       }
       if (req.method === 'GET' && url.pathname === '/api/image') {
         return send(200, { dataUrl: await readImageDataUrl(url.searchParams.get('path'), expandPath) });
+      }
+      // Vocal Discord (widget Edge Voice) : état, salons, commandes.
+      if (url.pathname === '/api/voice' || url.pathname.startsWith('/api/voice/')) {
+        if (!voice) return send(200, { status: 'unavailable' });
+        if (req.method === 'GET' && url.pathname === '/api/voice') return send(200, voice.snapshot());
+        try {
+          if (req.method === 'GET' && url.pathname === '/api/voice/guilds') return send(200, { ok: true, guilds: await voice.guilds() });
+          if (req.method === 'GET' && url.pathname === '/api/voice/channels') {
+            return send(200, { ok: true, channels: await voice.channels(url.searchParams.get('guild')) });
+          }
+          if (req.method === 'POST' && url.pathname === '/api/voice') {
+            if (!/application\/json/i.test(req.headers['content-type'] || '')) return send(415, { ok: false, error: 'Content-Type: application/json requis' });
+            const body = await readJsonBody(req);
+            switch (body.op) {
+              case 'authorize':
+                await voice.authorize();
+                break;
+              case 'join':
+                await voice.join(body.channelId);
+                break;
+              case 'leave':
+                await voice.leave();
+                break;
+              case 'mute':
+                await voice.setMute(body.value);
+                break;
+              case 'deaf':
+                await voice.setDeaf(body.value);
+                break;
+              case 'favorite':
+                voice.toggleFavorite(body.channel);
+                break;
+              case 'user':
+                await voice.setUserVoice(body.userId, { volume: body.volume, mute: body.mute });
+                break;
+              case 'forget':
+                voice.forgetRecent(body.channelId);
+                break;
+              default:
+                return send(400, { ok: false, error: 'Opération inconnue' });
+            }
+            return send(200, { ok: true, voice: voice.snapshot() });
+          }
+        } catch (err) {
+          return send(200, { ok: false, error: err.message, voice: voice.snapshot() });
+        }
+        return send(404, { ok: false, error: 'Route inconnue' });
       }
       if (req.method === 'POST' && (url.pathname === '/api/action' || url.pathname === '/api/state')) {
         // Exige un corps JSON : oblige le navigateur à une requête préliminaire CORS.

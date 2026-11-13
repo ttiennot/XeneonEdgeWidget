@@ -22,6 +22,8 @@ const DEFAULTS = {
   },
   deck: { columns: 4, rows: 3, pages: [{ name: 'Principal', buttons: [] }] },
   discord: { url: 'https://discord.com/channels/@me', zoom: 0.8 },
+  // Widget Edge Voice : identifiants de l'application créée sur discord.com/developers.
+  discordVoice: { clientId: '', clientSecret: '', redirectUri: 'http://localhost' },
 };
 
 function isPlainObject(v) {

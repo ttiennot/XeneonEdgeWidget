@@ -6,6 +6,7 @@ const { resolveConfigPath, loadConfig, watchConfig, patchConfigFile } = require(
 const { StatsCollector } = require('./stats');
 const { createActionRunner, expandEnv } = require('./actions');
 const { createAgentServer, DEFAULT_PORT } = require('./agent');
+const { createDiscordVoice } = require('./discord-voice');
 
 const WINDOWED = process.argv.includes('--windowed');
 // User-Agent de Chrome : évite l'écran "navigateur non supporté" de Discord.
@@ -18,6 +19,7 @@ let win = null;
 let tray = null;
 let config = null;
 let configPath = null;
+let voice = null;
 let collector = null;
 let actions = null;
 let lastStats = null;
@@ -304,6 +306,7 @@ async function startAgent() {
     actions,
     getIcon: getIconDataUrl,
     expandPath: expandEnv,
+    voice,
     version: app.getVersion(),
   });
   try {
@@ -349,6 +352,9 @@ app.whenReady().then(() => {
   setAutostart(config.autostart);
 
   actions = createActionRunner({ shell });
+  // Vocal Discord (widget Edge Voice) : jetons et favoris à côté de config.json.
+  voice = createDiscordVoice({ getSettings: () => (config && config.discordVoice) || {}, dataFile: path.join(path.dirname(configPath), 'discord-voice.json') });
+  voice.start();
   registerIpc();
   // Mode "agent" : pas de fenêtre, seulement l'agent pour les widgets iCUE et l'icône de notification.
   if (config.mode !== 'agent') createWindow();
@@ -374,5 +380,6 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   if (collector) collector.stop();
   if (actions) actions.dispose();
+  if (voice) voice.stop();
   if (agent) agent.server.close();
 });

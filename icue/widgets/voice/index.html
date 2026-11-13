@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tr('Edge Voice')</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+    <meta name="x-icue-widget-group" content="tr('Xeneon Edge Widget')" />
+    <meta name="x-icue-widget-preview" content="resources/preview.png" />
+
+    <meta name="x-icue-property" content="showAvatars" data-label="tr('Show avatars')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="accentColor" data-label="tr('Accent color')" data-type="color" data-default="'#5865f2'" />
+    <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background color')" data-type="color" data-default="'#0f1015'" />
+    <meta name="x-icue-property" content="textColor" data-label="tr('Text color')" data-type="color" data-default="'#f0efec'" />
+
+    <script type="application/json" id="x-icue-groups">
+      [
+        {
+          "title": "tr('Voice')",
+          "properties": ["showAvatars"],
+          "info": "tr('Controls voice in the Discord app of this PC through the Xeneon Edge Widget agent. See the README to create the Discord application.')"
+        },
+        { "title": "tr('Appearance')", "properties": ["accentColor", "backgroundColor", "textColor"] }
+      ]
+    </script>
+
+    <link rel="stylesheet" href="shared/edge.css" />
+    <link rel="stylesheet" href="styles/voice.css" />
+  </head>
+  <body>
+    <main class="vc">
+      <div class="bar">
+        <div class="where">
+          <div class="title" id="title"></div>
+          <div class="sub" id="sub"></div>
+        </div>
+        <button type="button" class="chip" id="nav" hidden="hidden"></button>
+      </div>
+      <section class="body" id="body"></section>
+      <div class="controls" id="controls">
+        <button type="button" class="ctl" id="mute">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" /><path class="slash" d="M4 3l16 18" /></svg>
+          <span id="mute-label"></span>
+        </button>
+        <button type="button" class="ctl" id="deaf">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" /><rect x="3" y="13" width="4.5" height="7" rx="1.5" /><rect x="16.5" y="13" width="4.5" height="7" rx="1.5" /><path class="slash" d="M4 3l16 18" /></svg>
+          <span id="deaf-label"></span>
+        </button>
+        <button type="button" class="ctl danger" id="hang">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14.5c0-1.2.6-2.3 1.700-2.900a15 15 0 0 1 14.600 0c1.100.6 1.700 1.700 1.700 2.900v.800c0 .7-.6 1.200-1.300 1.100l-2.900-.5a1.300 1.300 0 0 1-1.100-1.300v-1.300a11 11 0 0 0-7.400 0v1.300c0 .6-.5 1.200-1.100 1.300l-2.900.5c-.7.100-1.300-.4-1.300-1.100z" /></svg>
+          <span id="hang-label"></span>
+        </button>
+      </div>
+    </main>
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="shared/icue.js"></script>
+    <script src="scripts/voice.js"></script>
+  </body>
+</html>

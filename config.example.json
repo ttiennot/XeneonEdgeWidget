@@ -73,6 +73,12 @@
       }
     ]
   },
+  "discordVoice": {
+    "_comment": "Widget Edge Voice : identifiants de votre application Discord (discord.com/developers, voir le README). Ne partagez jamais clientSecret.",
+    "clientId": "",
+    "clientSecret": "",
+    "redirectUri": "http://localhost"
+  },
   "discord": {
     "_comment": "url : client web Discord (connexion mémorisée), ou un widget serveur / overlay StreamKit (voir README).",
     "url": "https://discord.com/channels/@me",

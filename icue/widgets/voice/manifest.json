@@ -1,0 +1,18 @@
+{
+  "author": "ttiennot",
+  "id": "com.ttiennot.xeneonedge.voice",
+  "name": "Edge Voice",
+  "description": "Vocal Discord pilote depuis le Xeneon Edge : rejoindre un salon dans l'application Discord du PC, micro, casque, participants. Necessite l'agent Xeneon Edge Widget.",
+  "version": "1.0.0",
+  "preview_icon": "resources/icon.svg",
+  "min_app_version": "5.47",
+  "min_framework_version": "1.0.0",
+  "os": [{ "platform": "windows" }],
+  "supported_devices": [{ "type": "dashboard_lcd" }],
+  "interactive": true,
+  "required_plugins": ["widgetbuilder.linkprovider:Url:1.0"],
+  "permissions": [
+    { "type": "url", "domain": "localhost", "port": 17890 },
+    { "type": "url", "domain": "cdn.discordapp.com" }
+  ]
+}

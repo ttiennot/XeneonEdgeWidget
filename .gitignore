@@ -3,3 +3,4 @@ dist/
 config.json
 *.log
 build/
+discord-voice.json

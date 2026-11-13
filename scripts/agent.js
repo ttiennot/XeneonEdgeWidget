@@ -12,6 +12,7 @@ const { loadConfig, watchConfig, resolveConfigPath } = require('../src/config');
 const { StatsCollector } = require('../src/stats');
 const { createActionRunner, expandEnv } = require('../src/actions');
 const { createAgentServer } = require('../src/agent');
+const { createDiscordVoice } = require('../src/discord-voice');
 
 function openWithSystem(target) {
   return new Promise((resolve, reject) => {
@@ -40,7 +41,9 @@ let lastStats = null;
 const collector = new StatsCollector(config, (s) => (lastStats = s));
 collector.start();
 const actions = createActionRunner({ shell });
-const server = createAgentServer({ getConfig: () => config, getStats: () => lastStats, actions, expandPath: expandEnv });
+const voice = createDiscordVoice({ getSettings: () => config.discordVoice || {}, dataFile: path.join(path.dirname(configPath), 'discord-voice.json') });
+voice.start();
+const server = createAgentServer({ getConfig: () => config, getStats: () => lastStats, actions, expandPath: expandEnv, voice });
 
 server.listen(config.agent.port).then(
   (port) => console.log(`Agent des widgets iCUE : http://localhost:${port}  (config : ${configPath})`),

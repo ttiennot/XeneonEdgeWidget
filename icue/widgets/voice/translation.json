@@ -1,0 +1,28 @@
+{
+  "en": {
+    "translation": {
+      "Edge Voice": "Edge Voice",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Show avatars": "Show avatars",
+      "Accent color": "Accent color",
+      "Background color": "Background color",
+      "Text color": "Text color",
+      "Voice": "Voice",
+      "Appearance": "Appearance",
+      "Controls voice in the Discord app of this PC through the Xeneon Edge Widget agent. See the README to create the Discord application.": "Controls voice in the Discord app of this PC through the Xeneon Edge Widget agent. See the README to create the Discord application."
+    }
+  },
+  "fr": {
+    "translation": {
+      "Edge Voice": "Edge Voice",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Show avatars": "Afficher les avatars",
+      "Accent color": "Couleur d'accent",
+      "Background color": "Couleur de fond",
+      "Text color": "Couleur du texte",
+      "Voice": "Vocal",
+      "Appearance": "Apparence",
+      "Controls voice in the Discord app of this PC through the Xeneon Edge Widget agent. See the README to create the Discord application.": "Pilote le vocal de l'application Discord de ce PC via l'agent Xeneon Edge Widget. Voir le README pour créer l'application Discord."
+    }
+  }
+}

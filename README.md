@@ -110,6 +110,21 @@ Pour modifier les widgets puis régénérer les paquets (validés avec l'outil o
 npm run build:icue
 ```
 
+## Edge Voice : le vocal de l'application Discord
+
+Le widget **Edge Voice** (`edge-voice.icuewidget`) pilote le vocal de l'application Discord du PC : rejoindre ou quitter un salon, couper le micro ou le casque (avec l'état réel), voir qui est présent et qui parle. Le son et le micro restent ceux de l'application ; le widget n'est qu'une télécommande. Il n'affiche pas les messages.
+
+Discord impose de passer par une « application » personnelle :
+
+1. Sur <https://discord.com/developers/applications>, **New Application** (nom libre, par exemple « Xeneon Edge »).
+2. Onglet **OAuth2** : copiez le **Client ID**, cliquez sur **Reset Secret** pour obtenir le **Client Secret**, et ajoutez `http://localhost` dans **Redirects** (puis **Save Changes**).
+3. Dans `config.json`, section `discordVoice`, renseignez `clientId` et `clientSecret`. Ne partagez jamais le secret.
+4. Ajoutez le widget dans iCUE, touchez **Autoriser**, puis acceptez la demande qui s'affiche dans Discord sur le PC.
+
+Les jetons obtenus et vos salons favoris sont gardés dans `discord-voice.json`, à côté de `config.json` (fichier local, ignoré par Git).
+
+Limites : Discord réserve cet accès au compte propriétaire de l'application (et à ses testeurs), ce qui suffit pour un usage personnel. Tant que l'agent est connecté, c'est lui qui a la main sur les réglages micro / casque de Discord.
+
 ## Températures : LibreHardwareMonitor (recommandé)
 
 Windows ne fournit pas les températures CPU de façon fiable. Pour des valeurs précises (CPU, GPU NVIDIA/AMD/Intel, puissances, VRAM) :

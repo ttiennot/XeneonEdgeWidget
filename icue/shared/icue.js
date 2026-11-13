@@ -206,6 +206,8 @@
     state: function (action) { return request('/api/state', { method: 'POST', body: { action: action }, timeout: 8000 }); },
     icon: function (path) { return request('/api/icon?path=' + encodeURIComponent(path)); },
     image: function (path) { return request('/api/image?path=' + encodeURIComponent(path)); },
+    get: function (path) { return request(path); },
+    post: function (path, body, timeout) { return request(path, { method: 'POST', body: body, timeout: timeout || 15000 }); },
   };
 
   /* -------------------------------------------------------------- */
