@@ -4,3 +4,4 @@ config.json
 *.log
 build/
 discord-voice.json
+session-state.json

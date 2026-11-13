@@ -351,7 +351,7 @@ app.whenReady().then(() => {
   }
   setAutostart(config.autostart);
 
-  actions = createActionRunner({ shell });
+  actions = createActionRunner({ shell, getVoice: () => voice, dataDir: path.dirname(configPath) });
   // Vocal Discord (widget Edge Voice) : jetons et favoris à côté de config.json.
   voice = createDiscordVoice({ getSettings: () => (config && config.discordVoice) || {}, dataFile: path.join(path.dirname(configPath), 'discord-voice.json') });
   voice.start();

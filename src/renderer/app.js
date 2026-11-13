@@ -192,7 +192,7 @@
 
   /* Boutons à état (ex. sortie audio Sonar) : affichent la valeur courante. */
 
-  const hasState = (action) => !!(action && (action.type === 'sonar' || action.type === 'nas') && api.getActionState);
+  const hasState = (action) => !!(action && ['sonar', 'nas', 'sound', 'discordVoice', 'session'].includes(action.type) && api.getActionState);
 
   function applyKeyState(el, button, st) {
     const label = el.querySelector('.key-label');
@@ -201,6 +201,9 @@
       label.textContent = st.label || st.deviceName;
       el.title = st.deviceName ? `${button.label || ''} : ${st.deviceName}` : button.label || '';
       renderIcon(icon, { ...button, icon: st.icon || button.icon });
+      const color = st.color || button.color;
+      if (color) el.style.setProperty('--key-color', color);
+      else el.style.removeProperty('--key-color');
       el.classList.remove('stale');
     } else {
       label.textContent = '?';
@@ -257,7 +260,9 @@
         flash(el, 'ok');
         if (res.result && hasState(action)) {
           applyKeyState(el, button, res.result);
-          if (action.type === 'nas') {
+          if (action.type === 'sound' || action.type === 'discordVoice' || action.type === 'session') {
+            if (res.result.message) toast(res.result.message);
+          } else if (action.type === 'nas') {
             if (res.result.message) toast(res.result.message);
             setTimeout(refreshKeyStates, 5500);
           } else toast(`Sortie audio : ${res.result.label || res.result.deviceName}`);

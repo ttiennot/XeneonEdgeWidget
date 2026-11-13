@@ -23,6 +23,9 @@ const { SonarClient } = require('./sonar');
 const { createBrowserLauncher } = require('./browser');
 const { sendWol } = require('./wol');
 const { createNasController } = require('./nas');
+const { createSoundController } = require('./sound');
+const { createVoiceControl } = require('./voice-control');
+const { createSessionController } = require('./session');
 
 /* ------------------------------------------------------------------ */
 /* Codes de touches virtuelles Windows                                 */
@@ -254,12 +257,14 @@ function runFile(cmd, args) {
 /* Exécuteur                                                           */
 /* ------------------------------------------------------------------ */
 
-function createActionRunner({ shell, ownPid = process.pid, platform = process.platform }) {
+function createActionRunner({ shell, getVoice, dataDir, ownPid = process.pid, platform = process.platform }) {
   const keyHelper = platform === 'win32' ? new WindowsKeyHelper(ownPid) : null;
   let sonarClient = null;
   const sonar = () => (sonarClient = sonarClient || new SonarClient());
   const browsers = createBrowserLauncher({ expandEnv, platform });
   const nas = createNasController({ expandPath: expandEnv });
+  const sound = createSoundController({ platform });
+  const voiceControl = createVoiceControl(getVoice);
   if (keyHelper) keyHelper.ensure(); // pré-chargement : la compilation C# prend ~1 s
 
   const sendHotkey = async (keys) => {
@@ -353,6 +358,12 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
         return sendWol(action);
       case 'nas':
         return nas.run(action);
+      case 'sound':
+        return sound.run(action);
+      case 'discordVoice':
+        return voiceControl.run(action);
+      case 'session':
+        return session.run(action);
       case 'page':
       case 'discord':
         return undefined; // gérées par l'interface
@@ -361,17 +372,27 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
     }
   };
 
+  // Sessions de travail : réutilisent les actions classiques (navigateur, applications).
+  const session = createSessionController({ runAction: (a) => run(a), stateFile: dataDir ? path.join(dataDir, 'session-state.json') : null, platform });
+
   /** État courant à afficher sur un bouton (null si le type n'a pas d'état). */
   const state = async (action) => {
     if (action && action.type === 'sonar') return sonar().state(action);
     if (action && action.type === 'nas') return nas.state(action);
+    if (action && action.type === 'sound') return sound.state(action);
+    if (action && action.type === 'discordVoice') return voiceControl.state(action);
+    if (action && action.type === 'session') return session.state(action);
     return null;
   };
 
   return {
     run,
     state,
-    dispose: () => keyHelper && keyHelper.dispose(),
+    dispose: () => {
+      if (keyHelper) keyHelper.dispose();
+      sound.dispose();
+      session.dispose();
+    },
   };
 }
 

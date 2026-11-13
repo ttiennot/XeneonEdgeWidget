@@ -40,7 +40,7 @@ let lastStats = null;
 
 const collector = new StatsCollector(config, (s) => (lastStats = s));
 collector.start();
-const actions = createActionRunner({ shell });
+const actions = createActionRunner({ shell, getVoice: () => voice, dataDir: path.dirname(configPath) });
 const voice = createDiscordVoice({ getSettings: () => config.discordVoice || {}, dataFile: path.join(path.dirname(configPath), 'discord-voice.json') });
 voice.start();
 const server = createAgentServer({ getConfig: () => config, getStats: () => lastStats, actions, expandPath: expandEnv, voice });

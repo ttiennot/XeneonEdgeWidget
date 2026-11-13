@@ -200,7 +200,7 @@
     el.appendChild(label);
     renderIcon(icon, button);
 
-    if (button.action && (button.action.type === 'sonar' || button.action.type === 'nas')) {
+    if (button.action && STATEFUL[button.action.type]) {
       var sub = document.createElement('span');
       sub.className = 'key-sub';
       sub.textContent = button.label || '';
@@ -231,12 +231,19 @@
   /* Boutons à état (sortie audio Sonar)                             */
   /* -------------------------------------------------------------- */
 
+  // Types de boutons dont le libellé, l'icône et la couleur suivent un état lu par l'agent.
+  var STATEFUL = { sonar: true, nas: true, sound: true, discordVoice: true, session: true };
+
   function applyKeyState(el, button, st) {
     var label = el.querySelector('.key-label');
     var icon = el.querySelector('.key-icon');
     if (st && (st.label || st.deviceName)) {
       label.textContent = st.label || st.deviceName;
       renderIcon(icon, { icon: st.icon || button.icon, action: button.action });
+      // Couleur propre à l'état (ex. son coupé / actif), sinon celle du bouton.
+      var color = st.color || button.color;
+      if (color) el.style.setProperty('--key-color', color);
+      else el.style.removeProperty('--key-color');
       el.classList.remove('stale');
     } else {
       label.textContent = '?';
@@ -325,6 +332,10 @@
             applyKeyState(el, button, res.result);
             Edge.toast(Edge.t('audioOutput', { x: res.result.label || res.result.deviceName }));
           }
+          if (res.result && (action.type === 'sound' || action.type === 'discordVoice' || action.type === 'session')) {
+            applyKeyState(el, button, res.result);
+            if (res.result.message) Edge.toast(res.result.message);
+          }
           if (res.result && action.type === 'nas') {
             applyKeyState(el, button, res.result);
             if (res.result.message) Edge.toast(res.result.message);
@@ -354,6 +365,8 @@
       loadConfig();
       // Recharge la configuration (modifiable à chaud) et l'état des boutons Sonar.
       setInterval(loadConfig, 10000);
+      // Les états (son, micro, NAS…) peuvent changer hors du widget : relecture fréquente.
+      setInterval(refreshStates, 3000);
       if (typeof ResizeObserver !== 'undefined') new ResizeObserver(sizeKeys).observe(document.getElementById('grid'));
       else window.addEventListener('resize', sizeKeys);
     },
