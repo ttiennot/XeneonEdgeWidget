@@ -43,7 +43,14 @@
   }
 
   window.pluginSensorsdataproviderEvents = { onInitialized: onReady };
-  if (window.pluginSensorsdataprovider_initialized) onReady();
+  if (window.Edge.globalValue('pluginSensorsdataprovider_initialized')) onReady();
+  // Si le plugin a été initialisé avant le chargement de cette page (démarrage du PC),
+  // le signal onInitialized est déjà passé : on vérifie nous-mêmes pendant une minute.
+  var tries = 0;
+  var watch = setInterval(function () {
+    if (plugin || ++tries > 120) return clearInterval(watch);
+    if (window.Edge.globalValue('pluginSensorsdataprovider_initialized')) onReady();
+  }, 500);
 
   window.IcueSensors = {
     available: function () { return !!plugin; },

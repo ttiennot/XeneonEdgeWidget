@@ -41,7 +41,21 @@
     return isFinite(v) ? v : fallback;
   }
 
-  var inIcue = typeof window.iCUE !== 'undefined' || typeof window.iCUE_initialized !== 'undefined';
+  /**
+   * Valeur d'une variable globale injectée par iCUE (iCUE_initialized, plugin…_initialized).
+   * Ces variables ne sont pas forcément des propriétés de window : on les lit par leur nom.
+   * Renvoie undefined si la variable n'existe pas.
+   */
+  function globalValue(name) {
+    try {
+      if (Object.prototype.hasOwnProperty.call(window, name)) return window[name];
+      return Function('return typeof ' + name + ' !== "undefined" ? ' + name + ' : undefined')();
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  var inIcue = typeof window.iCUE !== 'undefined' || globalValue('iCUE_initialized') !== undefined;
 
   /* -------------------------------------------------------------- */
   /* Cycle de vie                                                    */
@@ -60,12 +74,25 @@
       if (handlers.update) handlers.update();
     }
     window.icueEvents = { onICUEInitialized: init, onDataUpdated: update };
-    if (window.iCUE_initialized) init();
+    if (globalValue('iCUE_initialized')) init();
     // Hors iCUE (prévisualisation dans un navigateur) : démarrage direct.
     if (!inIcue) {
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
       else init();
+      return;
     }
+    // Au démarrage du PC ou de l'écran, iCUE peut avoir fini son initialisation avant que la page
+    // n'écoute onICUEInitialized : le widget restait alors vide. On surveille donc l'indicateur,
+    // et on démarre de toute façon au bout de quelques secondes (réglages par défaut au pire).
+    var waited = 0;
+    var watch = setInterval(function () {
+      waited += 250;
+      if (initialized) return clearInterval(watch);
+      if (globalValue('iCUE_initialized') || waited >= 5000) {
+        clearInterval(watch);
+        init();
+      }
+    }, 250);
   }
 
   /* -------------------------------------------------------------- */
@@ -230,7 +257,7 @@
 
   /** Ouvre un lien dans le navigateur du PC (plugin Link Provider d'iCUE). */
   function openLink(url) {
-    if (window.plugins && window.plugins.Linkprovider && window.pluginLinkprovider_initialized) {
+    if (window.plugins && window.plugins.Linkprovider && globalValue('pluginLinkprovider_initialized')) {
       window.plugins.Linkprovider.open(url);
       return true;
     }
@@ -243,6 +270,7 @@
 
   window.Edge = {
     inIcue: inIcue,
+    globalValue: globalValue,
     prop: prop,
     boolProp: boolProp,
     numProp: numProp,
