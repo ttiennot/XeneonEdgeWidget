@@ -1,0 +1,22 @@
+{
+  "author": "ttiennot",
+  "id": "com.ttiennot.xeneonedge.deezer",
+  "name": "Edge Deezer",
+  "description": "Lecteur web Deezer sur le Xeneon Edge : recherche, playlists et lecture directement sur l'ecran tactile.",
+  "version": "1.0.0",
+  "preview_icon": "resources/icon.svg",
+  "min_app_version": "5.47",
+  "min_framework_version": "1.0.0",
+  "os": [{ "platform": "windows" }],
+  "supported_devices": [{ "type": "dashboard_lcd" }],
+  "interactive": true,
+  "required_plugins": ["widgetbuilder.linkprovider:Url:1.0"],
+  "permissions": [
+    { "type": "url", "domain": "deezer.com" },
+    { "type": "url", "domain": "dzcdn.net" },
+    { "type": "url", "domain": "google.com" },
+    { "type": "url", "domain": "gstatic.com" },
+    { "type": "url", "domain": "recaptcha.net" },
+    { "type": "speaker" }
+  ]
+}

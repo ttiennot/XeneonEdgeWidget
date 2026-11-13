@@ -127,6 +127,8 @@
       openDiscord: 'Ouvrir Discord',
       discordHelp: 'Le client web Discord s’ouvre dans ce widget. Connectez-vous une fois : la session est conservée.',
       discordServerHelp: 'Indiquez l’ID de votre serveur dans les réglages du widget (Paramètres du serveur > Widget).',
+      openDeezer: 'Ouvrir Deezer',
+      deezerHelp: 'Le lecteur web Deezer s’ouvre dans ce widget. Connectez-vous une fois : la session est conservée.',
     },
     en: {
       agentOffline: 'Agent offline',
@@ -155,6 +157,8 @@
       openDiscord: 'Open Discord',
       discordHelp: 'The Discord web client opens in this widget. Log in once: the session is kept.',
       discordServerHelp: 'Set your server ID in the widget settings (Server Settings > Widget).',
+      openDeezer: 'Open Deezer',
+      deezerHelp: 'The Deezer web player opens in this widget. Log in once: the session is kept.',
     },
   };
 

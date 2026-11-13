@@ -1,0 +1,28 @@
+{
+  "en": {
+    "translation": {
+      "Edge Deezer": "Edge Deezer",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Start page": "Start page",
+      "Open automatically": "Open automatically",
+      "Accent color": "Accent color",
+      "Background color": "Background color",
+      "Deezer": "Deezer",
+      "Appearance": "Appearance",
+      "The Deezer web player opens in this widget. Log in once: the session is kept. Sound is played by iCUE on the default Windows output.": "The Deezer web player opens in this widget. Log in once: the session is kept. Sound is played by iCUE on the default Windows output."
+    }
+  },
+  "fr": {
+    "translation": {
+      "Edge Deezer": "Edge Deezer",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Start page": "Page d'accueil",
+      "Open automatically": "Ouvrir automatiquement",
+      "Accent color": "Couleur d'accent",
+      "Background color": "Couleur de fond",
+      "Deezer": "Deezer",
+      "Appearance": "Apparence",
+      "The Deezer web player opens in this widget. Log in once: the session is kept. Sound is played by iCUE on the default Windows output.": "Le lecteur web Deezer s'ouvre dans ce widget. Connectez-vous une fois : la session est conservée. Le son est joué par iCUE sur la sortie Windows par défaut."
+    }
+  }
+}

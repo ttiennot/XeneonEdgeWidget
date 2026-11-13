@@ -70,6 +70,7 @@ npm run dist
 | **Edge Deck** | Les boutons de `config.json` (pages, applis, raccourcis, Sonar, profils de navigateur…) | Oui (sans agent, seuls les liens `url` s'ouvrent) |
 | **Edge System** | Horloge, CPU / GPU (utilisation, température, puissance, VRAM), historique, mémoire, disques, réseau | Non pour CPU / GPU (capteurs iCUE) ; oui pour mémoire, disques, réseau |
 | **Edge Discord** | Client web Discord, ou widget d'un serveur (membres en ligne, salons vocaux) | Non |
+| **Edge Deezer** | Lecteur web Deezer (recherche, playlists, lecture) ; le son est joué par iCUE sur la sortie Windows par défaut | Non |
 
 ### Installation des widgets
 
@@ -84,6 +85,7 @@ Si vous avez utilisé `Installer.bat`, passez directement à l'étape 3.
    - `edge-deck.icuewidget`
    - `edge-system.icuewidget`
    - `edge-discord.icuewidget`
+   - `edge-deezer.icuewidget`
 4. Ajoutez les widgets sur l'Edge et réglez-les dans le panneau de droite d'iCUE. Acceptez les autorisations demandées (accès à `localhost:17890` pour l'agent, domaines Discord pour Edge Discord).
 
 ### Réglages dans iCUE

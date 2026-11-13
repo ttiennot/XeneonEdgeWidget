@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tr('Edge Deezer')</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+    <meta name="x-icue-widget-group" content="tr('Xeneon Edge Widget')" />
+    <meta name="x-icue-widget-preview" content="resources/preview.png" />
+
+    <meta name="x-icue-property" content="deezerUrl" data-label="tr('Start page')" data-type="textfield" data-default="'https://www.deezer.com/'" />
+    <meta name="x-icue-property" content="autoOpen" data-label="tr('Open automatically')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="accentColor" data-label="tr('Accent color')" data-type="color" data-default="'#a238ff'" />
+    <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background color')" data-type="color" data-default="'#0f1015'" />
+
+    <script type="application/json" id="x-icue-groups">
+      [
+        {
+          "title": "tr('Deezer')",
+          "properties": ["deezerUrl", "autoOpen"],
+          "info": "tr('The Deezer web player opens in this widget. Log in once: the session is kept. Sound is played by iCUE on the default Windows output.')"
+        },
+        { "title": "tr('Appearance')", "properties": ["accentColor", "backgroundColor"] }
+      ]
+    </script>
+
+    <link rel="stylesheet" href="shared/edge.css" />
+    <link rel="stylesheet" href="styles/deezer.css" />
+  </head>
+  <body>
+    <main class="dz" id="splash">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 48 44"><g fill="currentColor"><rect x="0" y="26" width="9" height="18" rx="2.5" /><rect x="13" y="16" width="9" height="28" rx="2.5" /><rect x="26" y="8" width="9" height="36" rx="2.5" /><rect x="39" y="0" width="9" height="44" rx="2.5" /></g></svg>
+      </div>
+      <p class="help" id="help"></p>
+      <button type="button" class="open" id="open"></button>
+    </main>
+
+    <script src="shared/icue.js"></script>
+    <script src="scripts/deezer.js"></script>
+  </body>
+</html>
