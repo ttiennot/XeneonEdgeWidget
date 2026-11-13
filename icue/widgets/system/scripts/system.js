@@ -147,7 +147,12 @@
     });
     renderCard('card-gpu', d.gpu, d.unit, function (card, gpu) {
       var ok = isNum(gpu.memUsed) && isNum(gpu.memTotal) && gpu.memTotal > 0;
-      setText(card, '[data-f="vram"]', ok ? fmt.bytes(gpu.memUsed * 1048576) + ' / ' + fmt.bytes(gpu.memTotal * 1048576, 0) : '-');
+      var used = ok ? fmt.bytes(gpu.memUsed * 1048576) : '';
+      var total = ok ? fmt.bytes(gpu.memTotal * 1048576, 0) : '';
+      // Même unité des deux côtés : « 3,5 / 12 Go » au lieu de « 3,5 Go / 12 Go » (tient dans la carte).
+      var unit = (total.match(/\s*\S+$/) || [''])[0];
+      if (unit && used.slice(-unit.length) === unit) used = used.slice(0, -unit.length);
+      setText(card, '[data-f="vram"]', ok ? used + ' / ' + total : '-');
     });
 
     var a = d.agent;
@@ -219,7 +224,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     var css = getComputedStyle(document.documentElement);
-    var fontSize = Math.max(9, Math.min(12, H / 9));
+    var fontSize = Math.max(9, Math.min(22, H / 8));
     var axisW = fontSize * 3.6;
     var plot = { x: axisW, y: fontSize / 2 + 2, w: W - axisW - 2, h: H - fontSize - 4 };
 

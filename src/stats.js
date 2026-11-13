@@ -247,6 +247,25 @@ function mergeDefined(base, extra) {
   return out;
 }
 
+/**
+ * Extrait les compteurs d'octets (reçus, envoyés) de la sortie de `netstat -e`.
+ * La première ligne de données est celle des octets, quelle que soit la langue de Windows.
+ */
+function parseNetstatBytes(output) {
+  for (const line of String(output || '').split(/\r?\n/)) {
+    const m = line.match(/\S\s+(\d+)\s+(\d+)\s*$/);
+    if (m) return { rx: Number(m[1]), tx: Number(m[2]) };
+  }
+  return null;
+}
+
+/** Windows : total des octets reçus / envoyés par les cartes réseau (null si indisponible). */
+function queryNetstat() {
+  return new Promise((resolve) => {
+    execFile('netstat', ['-e'], { timeout: 3000, windowsHide: true }, (err, stdout) => resolve(err ? null : parseNetstatBytes(stdout)));
+  });
+}
+
 class StatsCollector {
   constructor(config, onStats) {
     this.config = config;
@@ -367,6 +386,19 @@ class StatsCollector {
     await Promise.all(tasks);
   }
 
+  /** Débit réseau (octets/s) calculé entre deux lectures des compteurs Windows. */
+  async windowsNetRate() {
+    const now = Date.now();
+    const totals = await queryNetstat();
+    const prev = this.netPrev;
+    this.netPrev = totals ? { ...totals, time: now } : null;
+    if (!totals || !prev) return { rx: 0, tx: 0 };
+    const seconds = (now - prev.time) / 1000;
+    // Compteur remis à zéro (carte désactivée, dépassement) : on ignore cet intervalle.
+    if (seconds <= 0 || totals.rx < prev.rx || totals.tx < prev.tx) return { rx: 0, tx: 0 };
+    return { rx: (totals.rx - prev.rx) / seconds, tx: (totals.tx - prev.tx) / seconds };
+  }
+
   async collect() {
     if (this.busy) return;
     this.busy = true;
@@ -375,9 +407,12 @@ class StatsCollector {
       const [load, mem, net, time] = await Promise.all([
         si.currentLoad().catch(() => null),
         si.mem().catch(() => null),
-        si.networkStats('*').catch(() => []),
+        // Sous Windows, systeminformation renvoie des débits nuls sur certaines machines
+        // (noms de cartes localisés) : on lit directement les compteurs du système.
+        process.platform === 'win32' ? Promise.resolve([]) : si.networkStats('*').catch(() => []),
         Promise.resolve(si.time()),
       ]);
+      const netRate = process.platform === 'win32' ? await this.windowsNetRate() : null;
 
       const lhm = this.cache.lhm || {};
       let cpu = {
@@ -396,8 +431,8 @@ class StatsCollector {
       if (this.cache.nvidia) gpu = mergeDefined(this.cache.nvidia, gpu);
 
       const ifaces = Array.isArray(net) ? net : [];
-      const rx = ifaces.reduce((a, n) => a + (n.rx_sec > 0 ? n.rx_sec : 0), 0);
-      const tx = ifaces.reduce((a, n) => a + (n.tx_sec > 0 ? n.tx_sec : 0), 0);
+      const rx = netRate ? netRate.rx : ifaces.reduce((a, n) => a + (n.rx_sec > 0 ? n.rx_sec : 0), 0);
+      const tx = netRate ? netRate.tx : ifaces.reduce((a, n) => a + (n.tx_sec > 0 ? n.tx_sec : 0), 0);
 
       const stats = {
         time: Date.now(),
@@ -436,4 +471,4 @@ class StatsCollector {
   }
 }
 
-module.exports = { StatsCollector, flattenLhm, summarizeLhm, parseNvidiaSmi, parseNumber, HISTORY_LENGTH };
+module.exports = { StatsCollector, flattenLhm, summarizeLhm, parseNvidiaSmi, parseNetstatBytes, parseNumber, HISTORY_LENGTH };

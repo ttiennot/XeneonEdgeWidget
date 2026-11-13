@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap);
-  --fs: clamp(10px, 1.9vmin, 15px);
+  --fs: clamp(10px, 2.9vmin, 28px);
 }
 
 /* Horloge */
@@ -17,7 +17,7 @@
 }
 
 .clock-time {
-  font-size: clamp(28px, 9vmin, 64px);
+  font-size: clamp(28px, 11vmin, 104px);
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.02em;
@@ -25,7 +25,7 @@
 }
 
 .clock-date {
-  font-size: clamp(11px, 2.5vmin, 18px);
+  font-size: clamp(11px, 3.4vmin, 32px);
   color: var(--text-secondary);
   margin-top: 0.6vmin;
 }
@@ -56,7 +56,7 @@
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: clamp(8px, 2vmin, 16px);
+  padding: clamp(8px, 2.4vmin, 24px);
   display: flex;
   flex-direction: column;
   gap: 1.2vmin;
@@ -100,7 +100,7 @@
 
 .ring {
   position: relative;
-  width: clamp(64px, 19vmin, 136px);
+  width: clamp(64px, 26vmin, 250px);
   aspect-ratio: 1;
   flex: none;
 }
@@ -138,7 +138,7 @@
 }
 
 .ring-label span {
-  font-size: clamp(16px, 4.8vmin, 34px);
+  font-size: clamp(16px, 6.6vmin, 62px);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -164,7 +164,7 @@
 }
 
 .temp-value {
-  font-size: clamp(22px, 6.4vmin, 46px);
+  font-size: clamp(22px, 8vmin, 76px);
   font-weight: 300;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -206,9 +206,17 @@
 
 .kv {
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6vmin 1.6vmin;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vmin;
+}
+
+.kv div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.2vmin;
+  min-width: 0;
 }
 
 .kv dt {
@@ -218,7 +226,9 @@
 
 .kv dd {
   margin: 0;
-  font-size: calc(var(--fs) * 1.15);
+  font-size: calc(var(--fs) * 1.1);
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -299,26 +309,26 @@
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) * 0.8);
-  padding: clamp(6px, 1.4vmin, 12px) clamp(8px, 1.8vmin, 16px);
+  padding: clamp(6px, 1.6vmin, 16px) clamp(8px, 2vmin, 20px);
   display: flex;
   flex-direction: column;
   gap: 0.8vmin;
   min-width: 0;
-  height: clamp(64px, 14vmin, 104px);
+  height: clamp(64px, 20vmin, 190px);
   overflow: hidden;
 }
 
 .big {
-  font-size: calc(var(--fs) * 1.45);
+  font-size: calc(var(--fs) * 1.3);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .bar {
   flex: 1;
-  height: 7px;
-  max-height: 7px;
-  min-height: 7px;
+  height: clamp(7px, 1.3vmin, 12px);
+  max-height: clamp(7px, 1.3vmin, 12px);
+  min-height: clamp(7px, 1.3vmin, 12px);
   background: var(--track);
   border-radius: 999px;
   overflow: hidden;

@@ -91,3 +91,18 @@ test('nvidia-smi', () => {
   assert.strictEqual(parseNvidiaSmi('NVIDIA X, 50, 3, 100, 200, [N/A], [N/A], 300').power, null);
   assert.strictEqual(parseNvidiaSmi(''), null);
 });
+
+test('parseNetstatBytes : lit les octets reçus / envoyés de netstat -e (Windows en français)', () => {
+  const { parseNetstatBytes } = require('../src/stats');
+  const out = [
+    "Statistiques de l'interface",
+    '',
+    '                                    Reçus            Émis',
+    '',
+    'Octets                         3877576797       676574885',
+    'Paquets monodiffusion            12020135         5640775',
+    'Protocoles inconnus                     0',
+  ].join('\r\n');
+  assert.deepStrictEqual(parseNetstatBytes(out), { rx: 3877576797, tx: 676574885 });
+  assert.strictEqual(parseNetstatBytes(''), null);
+});
