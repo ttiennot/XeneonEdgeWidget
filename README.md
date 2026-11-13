@@ -198,6 +198,7 @@ L'écran Edge peut aussi être monté en **portrait** (720×2560) : les panneaux
 | `multi` | `actions`, `delayMs` | `{ "type": "multi", "actions": [ … ], "delayMs": 300 }` |
 | `browser` | `browser`, `profile`, `urls`, `userDataDir`, `newWindow` | voir [Navigateur avec un profil](#navigateur-avec-un-profil-et-des-onglets) |
 | `wol` | `mac`, `address`, `port` | `{ "type": "wol", "mac": "00-11-22-33-44-55" }` : allume un appareil du réseau (Wake-on-LAN) |
+| `nas` | `mac`, `host`, `user`, `key`, `labels` | `{ "type": "nas", "mac": "00-11-22-33-44-55", "host": "192.168.1.50", "user": "admin", "key": "%USERPROFILE%\.ssh\nas_edge" }` : affiche l'état d'un NAS, l'allume (Wake-on-LAN) ou l'éteint en SSH après confirmation |
 | `sonar` | `toggle` ou `device`, `channels` | voir [SteelSeries Sonar](#steelseries-sonar--basculer-enceintes--casque) |
 
 Les chemins acceptent les variables d'environnement (`%LOCALAPPDATA%`, `%USERPROFILE%`…).

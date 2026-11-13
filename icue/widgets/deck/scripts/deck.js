@@ -200,7 +200,7 @@
     el.appendChild(label);
     renderIcon(icon, button);
 
-    if (button.action && button.action.type === 'sonar') {
+    if (button.action && (button.action.type === 'sonar' || button.action.type === 'nas')) {
       var sub = document.createElement('span');
       sub.className = 'key-sub';
       sub.textContent = button.label || '';
@@ -324,6 +324,12 @@
           if (res.result && action.type === 'sonar') {
             applyKeyState(el, button, res.result);
             Edge.toast(Edge.t('audioOutput', { x: res.result.label || res.result.deviceName }));
+          }
+          if (res.result && action.type === 'nas') {
+            applyKeyState(el, button, res.result);
+            if (res.result.message) Edge.toast(res.result.message);
+            // La demande de confirmation expire après 5 s : on réaffiche alors l'état réel.
+            setTimeout(refreshStates, 5500);
           }
         } else {
           flash(el, 'error');

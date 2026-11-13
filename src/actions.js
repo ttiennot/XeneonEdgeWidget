@@ -22,6 +22,7 @@ const path = require('path');
 const { SonarClient } = require('./sonar');
 const { createBrowserLauncher } = require('./browser');
 const { sendWol } = require('./wol');
+const { createNasController } = require('./nas');
 
 /* ------------------------------------------------------------------ */
 /* Codes de touches virtuelles Windows                                 */
@@ -258,6 +259,7 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
   let sonarClient = null;
   const sonar = () => (sonarClient = sonarClient || new SonarClient());
   const browsers = createBrowserLauncher({ expandEnv, platform });
+  const nas = createNasController({ expandPath: expandEnv });
   if (keyHelper) keyHelper.ensure(); // pré-chargement : la compilation C# prend ~1 s
 
   const sendHotkey = async (keys) => {
@@ -349,6 +351,8 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
         return browsers.open(action);
       case 'wol':
         return sendWol(action);
+      case 'nas':
+        return nas.run(action);
       case 'page':
       case 'discord':
         return undefined; // gérées par l'interface
@@ -360,6 +364,7 @@ function createActionRunner({ shell, ownPid = process.pid, platform = process.pl
   /** État courant à afficher sur un bouton (null si le type n'a pas d'état). */
   const state = async (action) => {
     if (action && action.type === 'sonar') return sonar().state(action);
+    if (action && action.type === 'nas') return nas.state(action);
     return null;
   };
 

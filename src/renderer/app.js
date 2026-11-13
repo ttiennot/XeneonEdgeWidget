@@ -192,7 +192,7 @@
 
   /* Boutons à état (ex. sortie audio Sonar) : affichent la valeur courante. */
 
-  const hasState = (action) => !!(action && action.type === 'sonar' && api.getActionState);
+  const hasState = (action) => !!(action && (action.type === 'sonar' || action.type === 'nas') && api.getActionState);
 
   function applyKeyState(el, button, st) {
     const label = el.querySelector('.key-label');
@@ -257,7 +257,10 @@
         flash(el, 'ok');
         if (res.result && hasState(action)) {
           applyKeyState(el, button, res.result);
-          toast(`Sortie audio : ${res.result.label || res.result.deviceName}`);
+          if (action.type === 'nas') {
+            if (res.result.message) toast(res.result.message);
+            setTimeout(refreshKeyStates, 5500);
+          } else toast(`Sortie audio : ${res.result.label || res.result.deviceName}`);
         }
       }
       else {
