@@ -15,6 +15,22 @@ Deux façons de l'utiliser :
 
 ## Installation
 
+### Automatique (recommandé)
+
+1. Récupérez le projet sur le PC : sur GitHub, bouton **Code > Download ZIP** (puis extrayez l'archive dans un dossier qui restera en place, par exemple `Documents\XeneonEdgeWidget`), ou `git clone`.
+2. Double-cliquez sur **`Installer.bat`**. Il :
+   - installe Node.js LTS avec `winget` s'il est absent (relancez `Installer.bat` une fois Node.js installé si la fenêtre vous le demande) ;
+   - installe les dépendances (`npm install`) ;
+   - passe `config.json` en mode agent et active le lancement au démarrage de Windows ;
+   - démarre l'application et vérifie que l'agent répond ;
+   - propose d'installer LibreHardwareMonitor ;
+   - copie les 3 widgets dans le dossier **Widgets Xeneon Edge** du Bureau et l'ouvre.
+3. Dernière étape, manuelle : dans iCUE, importez les 3 fichiers `.icuewidget` avec le bouton **+** (voir [Widgets iCUE](#widgets-icue)).
+
+`Installer.bat -Window` installe à la place le tableau de bord plein écran. **`Desinstaller.bat`** arrête l'application et retire son lancement au démarrage.
+
+### Manuelle
+
 Prérequis : Windows 10/11 et [Node.js](https://nodejs.org/) 20 ou plus récent.
 
 ```bash
@@ -56,6 +72,8 @@ npm run dist
 | **Edge Discord** | Client web Discord, ou widget d'un serveur (membres en ligne, salons vocaux) | Non |
 
 ### Installation des widgets
+
+Si vous avez utilisé `Installer.bat`, passez directement à l'étape 3.
 
 1. Dans `config.json`, passez en mode agent (la fenêtre plein écran ne s'ouvre plus) :
    ```json

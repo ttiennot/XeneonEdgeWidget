@@ -104,4 +104,20 @@ function watchConfig(file, onChange, onError) {
   return () => fs.unwatchFile(file, reload);
 }
 
-module.exports = { DEFAULTS, deepMerge, normalize, resolveConfigPath, loadConfig, watchConfig };
+/**
+ * Modifie des clés de premier niveau de config.json en conservant le reste du fichier
+ * (y compris les commentaires "_comment"). Crée le fichier depuis l'exemple s'il manque.
+ */
+function patchConfigFile(file, patch) {
+  if (!fs.existsSync(file)) fs.copyFileSync(EXAMPLE_PATH, file);
+  const raw = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
+  const data = JSON.parse(raw);
+  const next = {};
+  // Les nouvelles clés sont placées en tête, les existantes gardent leur position.
+  for (const key of Object.keys(patch)) if (!(key in data)) next[key] = patch[key];
+  for (const [key, value] of Object.entries(data)) next[key] = key in patch ? patch[key] : value;
+  fs.writeFileSync(file, JSON.stringify(next, null, 2) + '\n', 'utf8');
+  return next;
+}
+
+module.exports = { DEFAULTS, deepMerge, normalize, resolveConfigPath, loadConfig, watchConfig, patchConfigFile, EXAMPLE_PATH };

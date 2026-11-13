@@ -2,7 +2,7 @@
 
 const { app, BrowserWindow, ipcMain, screen, shell, Tray, Menu, nativeImage, dialog } = require('electron');
 const path = require('path');
-const { resolveConfigPath, loadConfig, watchConfig } = require('./config');
+const { resolveConfigPath, loadConfig, watchConfig, patchConfigFile } = require('./config');
 const { StatsCollector } = require('./stats');
 const { createActionRunner, expandEnv } = require('./actions');
 const { createAgentServer, DEFAULT_PORT } = require('./agent');
@@ -138,6 +138,29 @@ app.on('web-contents-created', (_event, contents) => {
 /* Tray                                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Lancement au démarrage de Windows (clé « Run » de l'utilisateur, nom XeneonEdgeWidget).
+ * Hors exécutable packagé, on enregistre electron.exe + le dossier du projet.
+ */
+function loginItemOptions() {
+  const opts = { name: 'XeneonEdgeWidget' };
+  if (!app.isPackaged) {
+    opts.path = process.execPath;
+    opts.args = [app.getAppPath()];
+  }
+  return opts;
+}
+
+function setAutostart(enabled) {
+  if (process.platform !== 'win32' && process.platform !== 'darwin') return;
+  app.setLoginItemSettings({ ...loginItemOptions(), openAtLogin: !!enabled });
+}
+
+function isAutostart() {
+  if (process.platform !== 'win32' && process.platform !== 'darwin') return false;
+  return app.getLoginItemSettings(loginItemOptions()).openAtLogin;
+}
+
 function showWindow() {
   if (!win) createWindow();
   else {
@@ -170,8 +193,9 @@ function refreshTray() {
     {
       label: 'Lancer au démarrage de Windows',
       type: 'checkbox',
-      checked: app.getLoginItemSettings().openAtLogin,
-      click: (item) => app.setLoginItemSettings({ openAtLogin: item.checked }),
+      checked: isAutostart(),
+      // Écrit dans config.json : le réglage est ensuite appliqué par le rechargement à chaud.
+      click: (item) => patchConfigFile(configPath, { autostart: item.checked }),
     },
     { type: 'separator' },
     { label: 'Quitter', click: () => app.quit() },
@@ -299,7 +323,7 @@ async function startAgent() {
 function applyConfig(next) {
   const previousMode = config && config.mode;
   config = next;
-  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!config.autostart });
+  setAutostart(config.autostart);
   if (collector) collector.setConfig(config);
   startAgent();
   if (config.mode === 'agent' && previousMode !== 'agent' && win) win.close();
@@ -322,7 +346,7 @@ app.whenReady().then(() => {
     dialog.showErrorBox('Configuration invalide', `${configPath}\n\n${err.message}\n\nLa configuration d'exemple est utilisée.`);
     config = loadConfig(path.join(__dirname, '..', 'config.example.json'));
   }
-  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!config.autostart });
+  setAutostart(config.autostart);
 
   actions = createActionRunner({ shell });
   registerIpc();
