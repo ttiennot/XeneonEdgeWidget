@@ -4,7 +4,7 @@
  * Wake-on-LAN : envoie un « paquet magique » pour allumer un appareil du réseau local
  * (NAS, PC…) à partir de son adresse MAC.
  *
- *   { "type": "wol", "mac": "90-09-D0-46-19-FB" }
+ *   { "type": "wol", "mac": "00-11-22-33-44-55" }
  *
  * Le paquet est diffusé sur chaque carte réseau IPv4 active, pour qu'il parte bien sur le
  * réseau local même si le PC a aussi des cartes virtuelles (Hyper-V, VPN…).
@@ -13,7 +13,7 @@
 const dgram = require('dgram');
 const os = require('os');
 
-/** « 90-09-D0-46-19-FB », « 90:09:d0:46:19:fb » ou « 9009D04619FB » -> 6 octets. */
+/** « 00-11-22-33-44-55 », « 00:11:22:33:44:55 » ou « 001122334455 » -> 6 octets. */
 function parseMac(mac) {
   const hex = String(mac || '').replace(/[^0-9a-f]/gi, '');
   if (hex.length !== 12 || /[^0-9a-f:.\-\s]/i.test(String(mac))) throw new Error(`Adresse MAC invalide : "${mac}"`);

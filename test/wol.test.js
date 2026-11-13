@@ -5,24 +5,24 @@ const assert = require('node:assert');
 const { buildMagicPacket, parseMac, broadcastAddress, localTargets } = require('../src/wol');
 
 test('parseMac : accepte tirets, deux-points et forme compacte', () => {
-  const expected = Buffer.from([0x90, 0x09, 0xd0, 0x46, 0x19, 0xfb]);
-  assert.deepStrictEqual(parseMac('90-09-D0-46-19-FB'), expected);
-  assert.deepStrictEqual(parseMac('90:09:d0:46:19:fb'), expected);
-  assert.deepStrictEqual(parseMac('9009D04619FB'), expected);
+  const expected = Buffer.from([0x00, 0x11, 0x22, 0x33, 0x44, 0x55]);
+  assert.deepStrictEqual(parseMac('00-11-22-33-44-55'), expected);
+  assert.deepStrictEqual(parseMac('00:11:22:33:44:55'), expected);
+  assert.deepStrictEqual(parseMac('001122334455'), expected);
 });
 
 test('parseMac : refuse une adresse incomplète ou invalide', () => {
-  assert.throws(() => parseMac('90-09-D0-46-19'), /MAC invalide/);
-  assert.throws(() => parseMac('zz-09-D0-46-19-FB'), /MAC invalide/);
+  assert.throws(() => parseMac('00-11-22-33-44'), /MAC invalide/);
+  assert.throws(() => parseMac('zz-11-22-33-44-55'), /MAC invalide/);
   assert.throws(() => parseMac(''), /MAC invalide/);
 });
 
 test('buildMagicPacket : 6 octets FF puis 16 fois la MAC', () => {
-  const packet = buildMagicPacket('90-09-D0-46-19-FB');
+  const packet = buildMagicPacket('00-11-22-33-44-55');
   assert.strictEqual(packet.length, 102);
   assert.ok(packet.subarray(0, 6).every((b) => b === 0xff));
   for (let i = 0; i < 16; i++) {
-    assert.strictEqual(packet.subarray(6 + i * 6, 12 + i * 6).toString('hex'), '9009d04619fb');
+    assert.strictEqual(packet.subarray(6 + i * 6, 12 + i * 6).toString('hex'), '001122334455');
   }
 });
 

@@ -197,7 +197,7 @@ L'écran Edge peut aussi être monté en **portrait** (720×2560) : les panneaux
 | `discord` | `url` | `{ "type": "discord", "url": "https://discord.com/channels/123/456" }` |
 | `multi` | `actions`, `delayMs` | `{ "type": "multi", "actions": [ … ], "delayMs": 300 }` |
 | `browser` | `browser`, `profile`, `urls`, `userDataDir`, `newWindow` | voir [Navigateur avec un profil](#navigateur-avec-un-profil-et-des-onglets) |
-| `wol` | `mac`, `address`, `port` | `{ "type": "wol", "mac": "90-09-D0-46-19-FB" }` : allume un appareil du réseau (Wake-on-LAN) |
+| `wol` | `mac`, `address`, `port` | `{ "type": "wol", "mac": "00-11-22-33-44-55" }` : allume un appareil du réseau (Wake-on-LAN) |
 | `sonar` | `toggle` ou `device`, `channels` | voir [SteelSeries Sonar](#steelseries-sonar--basculer-enceintes--casque) |
 
 Les chemins acceptent les variables d'environnement (`%LOCALAPPDATA%`, `%USERPROFILE%`…).
