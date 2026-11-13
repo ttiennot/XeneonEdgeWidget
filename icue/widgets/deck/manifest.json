@@ -1,0 +1,15 @@
+{
+  "author": "ttiennot",
+  "id": "com.ttiennot.xeneonedge.deck",
+  "name": "Edge Deck",
+  "description": "Stream Deck tactile : applis, liens, raccourcis, touches media, sortie audio SteelSeries Sonar, profils de navigateur. Necessite l'agent Xeneon Edge Widget sur le PC.",
+  "version": "1.0.0",
+  "preview_icon": "resources/icon.svg",
+  "min_app_version": "5.47",
+  "min_framework_version": "1.0.0",
+  "os": [{ "platform": "windows" }],
+  "supported_devices": [{ "type": "dashboard_lcd" }],
+  "interactive": true,
+  "required_plugins": ["widgetbuilder.linkprovider:Url:1.0"],
+  "permissions": [{ "type": "url", "domain": "localhost", "port": 17890 }]
+}

@@ -1,0 +1,104 @@
+/* Base commune aux widgets iCUE Xeneon Edge (thème sombre). */
+:root {
+  color-scheme: dark;
+  --bg: #0f1015;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f0efec;
+  --text-secondary: rgba(240, 239, 236, 0.74);
+  --text-muted: rgba(240, 239, 236, 0.5);
+  --track: rgba(255, 255, 255, 0.09);
+  --accent: #3987e5;
+  --series-cpu: #3987e5;
+  --series-gpu: #d95926;
+  --good: #0ca30c;
+  --warning: #fab219;
+  --critical: #d03b3b;
+  --gap: clamp(6px, 1.6vmin, 14px);
+  --radius: clamp(10px, 2.6vmin, 20px);
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-primary);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 4vmin;
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  max-width: 90vw;
+  background: #22232d;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  padding: 1.4vmin 2.4vmin;
+  border-radius: 10px;
+  font-size: clamp(12px, 3vmin, 18px);
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast.error {
+  border-left-color: var(--critical);
+}
+
+.offline {
+  position: absolute;
+  inset: auto var(--gap) var(--gap) var(--gap);
+  display: none;
+  align-items: center;
+  gap: 1.6vmin;
+  padding: 1.4vmin 2vmin;
+  border-radius: 12px;
+  background: rgba(208, 59, 59, 0.16);
+  border: 1px solid rgba(208, 59, 59, 0.5);
+  font-size: clamp(11px, 2.6vmin, 16px);
+  color: var(--text-secondary);
+  z-index: 5;
+}
+
+.offline.show {
+  display: flex;
+}
+
+.offline b {
+  color: var(--text-primary);
+}
+
+.offline i {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--critical);
+}

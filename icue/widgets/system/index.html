@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tr('Edge System')</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+    <meta name="x-icue-widget-group" content="tr('Xeneon Edge Widget')" />
+    <meta name="x-icue-widget-preview" content="resources/preview.png" />
+
+    <meta name="x-icue-property" content="dataSource" data-label="tr('Data source')" data-type="combobox" data-default="'auto'"
+      data-values="[{'key':'auto','value':tr('Automatic (iCUE sensors + agent)')},{'key':'icue','value':tr('iCUE sensors only')},{'key':'agent','value':tr('Agent only (LibreHardwareMonitor)')}]" />
+    <meta name="x-icue-property" content="cpuTempSensor" data-label="tr('CPU temperature')" data-type="sensors-combobox"
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature', 'cpu-temp')" />
+    <meta name="x-icue-property" content="cpuLoadSensor" data-label="tr('CPU load')" data-type="sensors-combobox" data-default="''" />
+    <meta name="x-icue-property" content="gpuTempSensor" data-label="tr('GPU temperature')" data-type="sensors-combobox"
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature', 'gpu-temp')" />
+    <meta name="x-icue-property" content="gpuLoadSensor" data-label="tr('GPU load')" data-type="sensors-combobox"
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('load', 'gpu-load')" />
+
+    <meta name="x-icue-property" content="showClock" data-label="tr('Show clock')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="showChart" data-label="tr('Show usage history')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="showDetails" data-label="tr('Show memory, disks and network')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="tempWarning" data-label="tr('Hot threshold')" data-type="slider" data-default="70" data-min="40" data-max="100" data-step="1" data-unit-label="'C'" />
+    <meta name="x-icue-property" content="tempCritical" data-label="tr('Critical threshold')" data-type="slider" data-default="85" data-min="50" data-max="110" data-step="1" data-unit-label="'C'" />
+
+    <meta name="x-icue-property" content="accentColor" data-label="tr('Accent color')" data-type="color" data-default="'#3987e5'" />
+    <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background color')" data-type="color" data-default="'#0f1015'" />
+    <meta name="x-icue-property" content="textColor" data-label="tr('Text color')" data-type="color" data-default="'#f0efec'" />
+
+    <script type="application/json" id="x-icue-groups">
+      [
+        {
+          "title": "tr('Sensors')",
+          "properties": ["dataSource", "cpuTempSensor", "cpuLoadSensor", "gpuTempSensor", "gpuLoadSensor"],
+          "info": "tr('Empty sensors are read from the Xeneon Edge Widget agent when it runs.')"
+        },
+        { "title": "tr('Display')", "properties": ["showClock", "showChart", "showDetails", "tempWarning", "tempCritical"] },
+        { "title": "tr('Appearance')", "properties": ["accentColor", "backgroundColor", "textColor"] }
+      ]
+    </script>
+
+    <link rel="stylesheet" href="shared/edge.css" />
+    <link rel="stylesheet" href="styles/system.css" />
+  </head>
+  <body>
+    <main class="sys">
+      <section class="top" id="top">
+        <div class="clock"><div class="clock-time" id="clock-time">--:--</div><div class="clock-date" id="clock-date"></div></div>
+        <div class="host"><div class="host-name" id="host-name"></div><div class="host-uptime" id="host-uptime"></div><div class="sources" id="sources"></div></div>
+      </section>
+
+      <section class="cards">
+        <article class="hw" id="card-cpu" style="--series: var(--series-cpu)">
+          <div class="hw-title"><span class="hw-tag">CPU</span><span class="hw-name" data-f="name"></span></div>
+          <div class="hw-body">
+            <div class="ring">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="52" /><circle class="ring-value" cx="60" cy="60" r="52" /></svg>
+              <div class="ring-label"><span data-f="load">-</span><small data-t="usage"></small></div>
+            </div>
+            <div class="hw-details">
+              <div class="temp"><span class="temp-value" data-f="temp">-</span><span class="status" data-f="status"><i></i><b></b></span></div>
+              <dl class="kv"><div><dt data-t="power"></dt><dd data-f="power">-</dd></div><div><dt data-t="clock"></dt><dd data-f="clock">-</dd></div></dl>
+            </div>
+          </div>
+        </article>
+        <article class="hw" id="card-gpu" style="--series: var(--series-gpu)">
+          <div class="hw-title"><span class="hw-tag">GPU</span><span class="hw-name" data-f="name"></span></div>
+          <div class="hw-body">
+            <div class="ring">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="52" /><circle class="ring-value" cx="60" cy="60" r="52" /></svg>
+              <div class="ring-label"><span data-f="load">-</span><small data-t="usage"></small></div>
+            </div>
+            <div class="hw-details">
+              <div class="temp"><span class="temp-value" data-f="temp">-</span><span class="status" data-f="status"><i></i><b></b></span></div>
+              <dl class="kv"><div><dt data-t="power"></dt><dd data-f="power">-</dd></div><div><dt>VRAM</dt><dd data-f="vram">-</dd></div></dl>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="history" id="history">
+        <div class="history-head"><h3 data-t="history"></h3><ul class="legend"><li><i style="background: var(--series-cpu)"></i>CPU</li><li><i style="background: var(--series-gpu)"></i>GPU</li></ul></div>
+        <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      </section>
+
+      <section class="details" id="details">
+        <div class="mini"><h3 data-t="memory"></h3><div class="big" id="mem">-</div><div class="bar"><div class="bar-fill" id="mem-bar"></div></div></div>
+        <div class="mini"><h3 data-t="disks"></h3><div class="disks" id="disks"></div></div>
+        <div class="mini"><h3 data-t="network"></h3><div class="net"><div><span>&#8595;</span><b id="net-rx">-</b></div><div><span>&#8593;</span><b id="net-tx">-</b></div></div></div>
+      </section>
+    </main>
+
+    <script src="shared/icue.js"></script>
+    <script src="scripts/sensors.js"></script>
+    <script src="scripts/system.js"></script>
+  </body>
+</html>

@@ -4,7 +4,8 @@ const { app, BrowserWindow, ipcMain, screen, shell, Tray, Menu, nativeImage, dia
 const path = require('path');
 const { resolveConfigPath, loadConfig, watchConfig } = require('./config');
 const { StatsCollector } = require('./stats');
-const { createActionRunner } = require('./actions');
+const { createActionRunner, expandEnv } = require('./actions');
+const { createAgentServer, DEFAULT_PORT } = require('./agent');
 
 const WINDOWED = process.argv.includes('--windowed');
 // User-Agent de Chrome : évite l'écran "navigateur non supporté" de Discord.
@@ -20,6 +21,8 @@ let configPath = null;
 let collector = null;
 let actions = null;
 let lastStats = null;
+let agent = null;
+let agentStatus = 'arrêté';
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -135,12 +138,29 @@ app.on('web-contents-created', (_event, contents) => {
 /* Tray                                                                */
 /* ------------------------------------------------------------------ */
 
+function showWindow() {
+  if (!win) createWindow();
+  else {
+    win.show();
+    placeWindow();
+  }
+}
+
 function createTray() {
   const icon = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray.png'));
   tray = new Tray(icon);
-  tray.setToolTip('Xeneon Edge Widget');
+  tray.on('click', showWindow);
+  refreshTray();
+}
+
+/** (Re)construit le menu : il affiche l'état de l'agent iCUE. */
+function refreshTray() {
+  if (!tray) return;
+  tray.setToolTip(`Xeneon Edge Widget — agent iCUE ${agentStatus}`);
   const menu = Menu.buildFromTemplate([
-    { label: 'Afficher', click: () => win && (win.show(), placeWindow()) },
+    { label: `Agent des widgets iCUE : ${agentStatus}`, enabled: false },
+    { type: 'separator' },
+    { label: 'Afficher le tableau de bord (fenêtre)', click: showWindow },
     { label: 'Recharger', click: () => win && win.webContents.reload() },
     { label: 'Modifier la configuration…', click: () => shell.openPath(configPath) },
     { label: 'Périphériques audio SteelSeries Sonar…', click: showSonarDevices },
@@ -157,7 +177,6 @@ function createTray() {
     { label: 'Quitter', click: () => app.quit() },
   ]);
   tray.setContextMenu(menu);
-  tray.on('click', () => win && (win.show(), placeWindow()));
 }
 
 /** Affiche les noms des sorties connues de Sonar, à recopier dans config.json. */
@@ -206,6 +225,15 @@ function showBrowserProfiles() {
 /* IPC                                                                 */
 /* ------------------------------------------------------------------ */
 
+async function getIconDataUrl(filePath) {
+  try {
+    const img = await app.getFileIcon(expandEnv(filePath), { size: 'large' });
+    return img.isEmpty() ? null : img.toDataURL();
+  } catch (_) {
+    return null;
+  }
+}
+
 function registerIpc() {
   ipcMain.handle('config:get', () => config);
   ipcMain.handle('stats:last', () => lastStats);
@@ -228,23 +256,54 @@ function registerIpc() {
     }
   });
 
-  ipcMain.handle('icon:get', async (_e, filePath) => {
-    try {
-      const { expandEnv } = require('./actions');
-      const img = await app.getFileIcon(expandEnv(filePath), { size: 'large' });
-      return img.isEmpty() ? null : img.toDataURL();
-    } catch (_) {
-      return null;
-    }
-  });
+  ipcMain.handle('icon:get', (_e, filePath) => getIconDataUrl(filePath));
 
   ipcMain.handle('config:open', () => shell.openPath(configPath));
 }
 
+/* ------------------------------------------------------------------ */
+/* Agent local pour les widgets iCUE                                   */
+/* ------------------------------------------------------------------ */
+
+async function startAgent() {
+  const wanted = config.agent.enabled ? Number(config.agent.port) || DEFAULT_PORT : null;
+  if (agent && agent.port === wanted) return;
+  if (agent) {
+    await agent.server.close();
+    agent = null;
+    agentStatus = 'arrêté';
+  }
+  if (!wanted) return refreshTray();
+  const server = createAgentServer({
+    getConfig: () => config,
+    getStats: () => lastStats,
+    actions,
+    getIcon: getIconDataUrl,
+    expandPath: expandEnv,
+    version: app.getVersion(),
+  });
+  try {
+    await server.listen(wanted);
+    agent = { server, port: wanted };
+    agentStatus = `actif sur le port ${wanted}`;
+  } catch (err) {
+    agentStatus = `erreur (${err.code || err.message})`;
+    dialog.showErrorBox(
+      'Agent des widgets iCUE',
+      `Impossible d'écouter sur le port ${wanted} : ${err.message}\n\nUne autre instance est peut-être déjà lancée.`
+    );
+  }
+  refreshTray();
+}
+
 function applyConfig(next) {
+  const previousMode = config && config.mode;
   config = next;
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!config.autostart });
   if (collector) collector.setConfig(config);
+  startAgent();
+  if (config.mode === 'agent' && previousMode !== 'agent' && win) win.close();
+  if (config.mode !== 'agent' && !win) createWindow();
   if (win) {
     placeWindow();
     win.webContents.send('config:changed', config);
@@ -267,8 +326,10 @@ app.whenReady().then(() => {
 
   actions = createActionRunner({ shell });
   registerIpc();
-  createWindow();
+  // Mode "agent" : pas de fenêtre, seulement l'agent pour les widgets iCUE et l'icône de notification.
+  if (config.mode !== 'agent') createWindow();
   createTray();
+  startAgent();
 
   collector = new StatsCollector(config, (stats) => {
     lastStats = stats;
@@ -283,8 +344,11 @@ app.whenReady().then(() => {
   );
 });
 
-app.on('window-all-closed', () => app.quit());
+app.on('window-all-closed', () => {
+  if (!config || config.mode !== 'agent') app.quit();
+});
 app.on('before-quit', () => {
   if (collector) collector.stop();
   if (actions) actions.dispose();
+  if (agent) agent.server.close();
 });

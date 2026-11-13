@@ -1,0 +1,24 @@
+{
+  "author": "ttiennot",
+  "id": "com.ttiennot.xeneonedge.discord",
+  "name": "Edge Discord",
+  "description": "Client web Discord ou widget d'un serveur Discord sur le Xeneon Edge.",
+  "version": "1.0.0",
+  "preview_icon": "resources/icon.svg",
+  "min_app_version": "5.47",
+  "min_framework_version": "1.0.0",
+  "os": [{ "platform": "windows" }],
+  "supported_devices": [{ "type": "dashboard_lcd" }],
+  "interactive": true,
+  "required_plugins": ["widgetbuilder.linkprovider:Url:1.0"],
+  "permissions": [
+    { "type": "url", "domain": "discord.com" },
+    { "type": "url", "domain": "discord.gg" },
+    { "type": "url", "domain": "discordapp.com" },
+    { "type": "url", "domain": "discordapp.net" },
+    { "type": "url", "domain": "discord.media" },
+    { "type": "url", "domain": "hcaptcha.com" },
+    { "type": "url", "domain": "cloudflare.com" },
+    { "type": "speaker" }
+  ]
+}

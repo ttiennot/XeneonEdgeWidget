@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tr('Edge Deck')</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+    <meta name="x-icue-widget-group" content="tr('Xeneon Edge Widget')" />
+    <meta name="x-icue-widget-preview" content="resources/preview.png" />
+
+    <meta name="x-icue-property" content="pageName" data-label="tr('Page (empty = all pages)')" data-type="textfield" data-default="''" />
+    <meta name="x-icue-property" content="gridColumns" data-label="tr('Columns (0 = from config)')" data-type="slider" data-default="0" data-min="0" data-max="8" data-step="1" />
+    <meta name="x-icue-property" content="gridRows" data-label="tr('Rows (0 = from config)')" data-type="slider" data-default="0" data-min="0" data-max="6" data-step="1" />
+    <meta name="x-icue-property" content="showLabels" data-label="tr('Show labels')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="showTabs" data-label="tr('Show page tabs')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="accentColor" data-label="tr('Accent color')" data-type="color" data-default="'#3987e5'" />
+    <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background color')" data-type="color" data-default="'#0f1015'" />
+    <meta name="x-icue-property" content="textColor" data-label="tr('Text color')" data-type="color" data-default="'#f0efec'" />
+
+    <script type="application/json" id="x-icue-groups">
+      [
+        {
+          "title": "tr('Buttons')",
+          "properties": ["pageName", "gridColumns", "gridRows", "showLabels", "showTabs"],
+          "info": "tr('Buttons are defined in config.json of the Xeneon Edge Widget agent.')"
+        },
+        { "title": "tr('Appearance')", "properties": ["accentColor", "backgroundColor", "textColor"] }
+      ]
+    </script>
+
+    <link rel="stylesheet" href="shared/edge.css" />
+    <link rel="stylesheet" href="styles/deck.css" />
+  </head>
+  <body>
+    <main class="deck">
+      <nav class="tabs" id="tabs"></nav>
+      <div class="grid" id="grid"></div>
+    </main>
+    <div class="offline" id="offline"><i></i><div><b id="offline-title"></b><br /><span id="offline-help"></span></div></div>
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="shared/icue.js"></script>
+    <script src="scripts/deck.js"></script>
+  </body>
+</html>

@@ -8,7 +8,10 @@ Tableau de bord tactile plein écran pour l'écran **Corsair Xeneon Edge** (2560
 
 ![Aperçu](docs/apercu.png)
 
-C'est une application [Electron](https://www.electronjs.org/) qui s'ouvre en plein écran sur le Xeneon Edge (détecté automatiquement) ; Windows voit l'Edge comme un écran secondaire.
+Deux façons de l'utiliser :
+
+1. **Widgets iCUE** (recommandé si vous utilisez iCUE) : trois widgets natifs à placer où vous voulez sur l'Edge depuis iCUE — **Edge Deck**, **Edge System** et **Edge Discord**. L'application tourne en arrière-plan en **mode agent** (sans fenêtre) pour exécuter les actions des boutons.
+2. **Application plein écran** : une fenêtre [Electron](https://www.electronjs.org/) qui occupe tout l'Edge (détecté automatiquement ; Windows le voit comme un écran secondaire), sans passer par iCUE.
 
 ## Installation
 
@@ -32,7 +35,7 @@ npm start
 
 Au premier lancement, `config.json` est créé à partir de `config.example.json`. Toute modification de ce fichier est appliquée **à chaud** (pas besoin de redémarrer).
 
-Une icône dans la zone de notification permet de recharger, d'ouvrir la configuration, d'activer le lancement au démarrage de Windows et de quitter.
+Une icône dans la zone de notification indique l'état de l'agent et permet d'afficher le tableau de bord, d'ouvrir la configuration, d'activer le lancement au démarrage de Windows et de quitter.
 
 Pour générer un `.exe` portable (dans `dist/`) :
 
@@ -41,6 +44,51 @@ npm run dist
 ```
 
 > Avec l'exécutable, la configuration se trouve dans `%APPDATA%\Xeneon Edge Widget\config.json` (menu de l'icône > *Modifier la configuration…*).
+
+## Widgets iCUE
+
+![Widgets iCUE](docs/widgets-icue.png)
+
+| Widget | Contenu | Besoin de l'agent ? |
+|---|---|---|
+| **Edge Deck** | Les boutons de `config.json` (pages, applis, raccourcis, Sonar, profils de navigateur…) | Oui (sans agent, seuls les liens `url` s'ouvrent) |
+| **Edge System** | Horloge, CPU / GPU (utilisation, température, puissance, VRAM), historique, mémoire, disques, réseau | Non pour CPU / GPU (capteurs iCUE) ; oui pour mémoire, disques, réseau |
+| **Edge Discord** | Client web Discord, ou widget d'un serveur (membres en ligne, salons vocaux) | Non |
+
+### Installation des widgets
+
+1. Dans `config.json`, passez en mode agent (la fenêtre plein écran ne s'ouvre plus) :
+   ```json
+   "mode": "agent"
+   ```
+2. Lancez l'application (`npm start` ou le `.exe`) et cochez *Lancer au démarrage de Windows* dans le menu de son icône.
+3. Dans iCUE (5.47 ou plus récent) : section des widgets du Xeneon Edge > bouton **+** au-dessus de la liste > choisissez un fichier du dossier [`icue/packages/`](icue/packages) :
+   - `edge-deck.icuewidget`
+   - `edge-system.icuewidget`
+   - `edge-discord.icuewidget`
+4. Ajoutez les widgets sur l'Edge et réglez-les dans le panneau de droite d'iCUE. Acceptez les autorisations demandées (accès à `localhost:17890` pour l'agent, domaines Discord pour Edge Discord).
+
+### Réglages dans iCUE
+
+- **Edge Deck** : page à afficher (vide = toutes, avec onglets ; pratique pour mettre plusieurs widgets Deck avec des pages différentes), nombre de colonnes / lignes (0 = valeurs de `config.json`), libellés, couleurs.
+- **Edge System** : source des données (automatique, capteurs iCUE seuls, agent seul), choix des capteurs CPU / GPU parmi ceux d'iCUE, seuils « chaud » / « critique », sections affichées, couleurs. Laissez un capteur vide pour utiliser la valeur de l'agent (LibreHardwareMonitor).
+- **Edge Discord** : *Client web* (Discord complet dans le widget : connectez-vous une fois) ou *Widget de serveur* (indiquez l'ID du serveur et activez le widget dans *Paramètres du serveur > Widget*).
+
+### Comment ça marche
+
+Les widgets iCUE tournent dans une vue web isolée : ils ne peuvent ni lancer un programme, ni simuler des touches, ni piloter SteelSeries Sonar. Edge Deck envoie donc chaque appui à l'**agent**, une petite API locale (`http://localhost:17890`, accessible uniquement depuis le PC) intégrée à l'application. L'agent refuse les requêtes venant de sites web, pour qu'une page ouverte dans un navigateur ne puisse pas déclencher d'action.
+
+Sans Electron, un agent minimal (sans icône de notification ni icônes de programmes) peut aussi être lancé avec :
+
+```bash
+npm run agent
+```
+
+Pour modifier les widgets puis régénérer les paquets (validés avec l'outil officiel `icuewidget-cli` de Corsair) :
+
+```bash
+npm run build:icue
+```
 
 ## Températures : LibreHardwareMonitor (recommandé)
 
@@ -51,6 +99,8 @@ Windows ne fournit pas les températures CPU de façon fiable. Pour des valeurs 
 3. Optionnel : *Options* > *Start Minimized*, *Minimize To Tray* et *Run On Windows Startup*.
 
 Le badge **LibreHardwareMonitor** apparaît en haut à droite du panneau Système quand la connexion fonctionne.
+
+Avec les widgets iCUE, Edge System utilise d'abord les capteurs d'iCUE ; LibreHardwareMonitor reste utile pour les valeurs qu'iCUE ne fournit pas (puissance, fréquence, VRAM).
 
 Sans LibreHardwareMonitor, le widget utilise `nvidia-smi` (installé avec les pilotes NVIDIA) pour le GPU, et `systeminformation` pour le reste ; la température CPU peut alors rester sur « N/D ».
 
@@ -72,6 +122,8 @@ Extrait commenté de `config.json` :
 
 ```jsonc
 {
+  "mode": "window",         // "window" = tableau de bord plein écran ; "agent" = pas de fenêtre (widgets iCUE)
+  "agent": { "enabled": true, "port": 17890 },  // API locale des widgets iCUE (gardez 17890)
   "display": {
     "target": "auto",       // "auto" = détecte l'écran 2560x720 ; sinon index de l'écran (0, 1, 2…)
     "alwaysOnTop": false,
@@ -198,7 +250,7 @@ npm run preview   # interface seule dans un navigateur, avec données simulées 
 ```
 
 ```bash
-npm test          # tests unitaires (LibreHardwareMonitor / nvidia-smi, raccourcis, configuration, Sonar, navigateurs)
+npm test          # tests unitaires (LibreHardwareMonitor / nvidia-smi, raccourcis, configuration, Sonar, navigateurs, agent)
 ```
 
 Structure :
@@ -210,6 +262,10 @@ src/actions.js       actions du Stream Deck (assistant PowerShell persistant pou
 src/sonar.js         pilotage de SteelSeries Sonar (changement de sortie audio)
 src/browser.js       ouverture d'un navigateur sur un profil avec des onglets
 src/config.js        chargement / validation / rechargement à chaud de config.json
+src/agent.js         API locale (localhost:17890) utilisée par les widgets iCUE
+icue/widgets/        sources des 3 widgets iCUE (deck, system, discord)
+icue/shared/         code et styles communs aux widgets
+icue/packages/       paquets .icuewidget prêts à importer dans iCUE
 src/preload.js       pont sécurisé entre l'interface et le processus principal
 src/renderer/        interface (HTML / CSS / JS sans framework)
 ```

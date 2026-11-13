@@ -1,4 +1,11 @@
 {
+  "_comment_mode": "window = tableau de bord plein écran (application). agent = pas de fenêtre : les widgets iCUE affichent l'interface et l'agent exécute leurs actions.",
+  "mode": "window",
+  "agent": {
+    "_comment": "API locale utilisée par les widgets iCUE. Le port doit rester 17890 (déclaré dans les widgets).",
+    "enabled": true,
+    "port": 17890
+  },
   "display": {
     "_comment": "auto = détecte l'écran 2560x720 (ou 720x2560). Sinon mettez l'index de l'écran (0, 1, 2...).",
     "target": "auto",

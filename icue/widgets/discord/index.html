@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tr('Edge Discord')</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+    <meta name="x-icue-widget-group" content="tr('Xeneon Edge Widget')" />
+    <meta name="x-icue-widget-preview" content="resources/preview.png" />
+
+    <meta name="x-icue-property" content="discordMode" data-label="tr('Display')" data-type="tab-buttons" data-default="'client'"
+      data-values="[{'key':'client','value':tr('Web client')},{'key':'server','value':tr('Server widget')}]" />
+    <meta name="x-icue-property" content="discordUrl" data-label="tr('Start page (web client)')" data-type="textfield" data-default="'https://discord.com/channels/@me'" />
+    <meta name="x-icue-property" content="autoOpen" data-label="tr('Open automatically')" data-type="switch" data-default="true" />
+    <meta name="x-icue-property" content="serverId" data-label="tr('Server ID (server widget)')" data-type="textfield" data-default="''" />
+    <meta name="x-icue-property" content="accentColor" data-label="tr('Accent color')" data-type="color" data-default="'#5865f2'" />
+    <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background color')" data-type="color" data-default="'#0f1015'" />
+
+    <script type="application/json" id="x-icue-groups">
+      [
+        {
+          "title": "tr('Discord')",
+          "properties": ["discordMode", "discordUrl", "autoOpen", "serverId"],
+          "info": "tr('Web client: full Discord, log in once. Server widget: online members and voice channels of a server (enable it in Server Settings, Widget).')"
+        },
+        { "title": "tr('Appearance')", "properties": ["accentColor", "backgroundColor"] }
+      ]
+    </script>
+
+    <link rel="stylesheet" href="shared/edge.css" />
+    <link rel="stylesheet" href="styles/discord.css" />
+  </head>
+  <body>
+    <main class="dc" id="splash">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 127 96"><path fill="currentColor" d="M107.7 8.1A105 105 0 0 0 81.5 0a72 72 0 0 0-3.4 6.8 97.7 97.7 0 0 0-29.1 0A72 72 0 0 0 45.6 0a105.9 105.9 0 0 0-26.3 8.1C2.7 32.7-1.8 56.6.4 80.2a105.7 105.7 0 0 0 32.2 16.2 77.7 77.7 0 0 0 6.9-11.2 68.4 68.4 0 0 1-10.9-5.2c.9-.7 1.8-1.4 2.7-2.1a75.6 75.6 0 0 0 64.3 0c.9.7 1.8 1.4 2.7 2.1a68.7 68.7 0 0 1-10.9 5.2 77 77 0 0 0 6.9 11.2 105.3 105.3 0 0 0 32.2-16.2c2.6-27.4-4.4-51.1-18.8-72.1ZM42.5 65.7c-6.3 0-11.4-5.7-11.4-12.8S36.1 40 42.5 40s11.5 5.8 11.4 12.9-5 12.8-11.4 12.8Zm42.2 0c-6.3 0-11.4-5.7-11.4-12.8S78.3 40 84.7 40s11.5 5.8 11.4 12.9-5 12.8-11.4 12.8Z"/></svg>
+      </div>
+      <p class="help" id="help"></p>
+      <button type="button" class="open" id="open"></button>
+    </main>
+    <iframe id="server" class="server" title="Discord" hidden="hidden"></iframe>
+
+    <script src="shared/icue.js"></script>
+    <script src="scripts/discord.js"></script>
+  </body>
+</html>

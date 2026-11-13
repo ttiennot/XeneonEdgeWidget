@@ -1,0 +1,416 @@
+.sys {
+  position: absolute;
+  inset: 0;
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  --fs: clamp(10px, 1.9vmin, 15px);
+}
+
+/* Horloge */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex: none;
+}
+
+.clock-time {
+  font-size: clamp(28px, 9vmin, 64px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-date {
+  font-size: clamp(11px, 2.5vmin, 18px);
+  color: var(--text-secondary);
+  margin-top: 0.6vmin;
+}
+
+.host {
+  text-align: right;
+  font-size: var(--fs);
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vmin;
+}
+
+.host-name {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Cartes CPU / GPU */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  flex: none;
+}
+
+.hw {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(8px, 2vmin, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vmin;
+  min-width: 0;
+}
+
+.hw.missing {
+  opacity: 0.45;
+}
+
+.hw-title {
+  display: flex;
+  align-items: center;
+  gap: 1.2vmin;
+  min-width: 0;
+}
+
+.hw-tag {
+  font-size: calc(var(--fs) * 0.85);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3vmin 1vmin;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--series) 22%, transparent);
+  border-left: 4px solid var(--series);
+}
+
+.hw-name {
+  font-size: var(--fs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hw-body {
+  display: flex;
+  align-items: center;
+  gap: 2vmin;
+}
+
+.ring {
+  position: relative;
+  width: clamp(64px, 19vmin, 136px);
+  aspect-ratio: 1;
+  flex: none;
+}
+
+.ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring circle {
+  fill: none;
+  stroke-width: 11;
+}
+
+.ring-track {
+  stroke: var(--track);
+}
+
+.ring-value {
+  stroke: var(--series);
+  stroke-linecap: round;
+  stroke-dasharray: 326.73;
+  stroke-dashoffset: 326.73;
+  transition: stroke-dashoffset 600ms ease;
+}
+
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-label span {
+  font-size: clamp(16px, 4.8vmin, 34px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ring-label small {
+  font-size: calc(var(--fs) * 0.8);
+  color: var(--text-muted);
+}
+
+.hw-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vmin;
+}
+
+.temp {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4vmin 1.4vmin;
+}
+
+.temp-value {
+  font-size: clamp(22px, 6.4vmin, 46px);
+  font-weight: 300;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vmin;
+  font-size: var(--fs);
+  color: var(--text-secondary);
+}
+
+.status i {
+  width: 1.2vmin;
+  height: 1.2vmin;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.status b {
+  font-weight: 600;
+}
+
+.status[data-level='good'] i {
+  background: var(--good);
+}
+
+.status[data-level='warning'] i {
+  background: var(--warning);
+}
+
+.status[data-level='critical'] i {
+  background: var(--critical);
+  box-shadow: 0 0 10px var(--critical);
+}
+
+.kv {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6vmin 1.6vmin;
+}
+
+.kv dt {
+  font-size: calc(var(--fs) * 0.82);
+  color: var(--text-muted);
+}
+
+.kv dd {
+  margin: 0;
+  font-size: calc(var(--fs) * 1.15);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Historique */
+.history {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vmin;
+}
+
+.history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-head h3,
+.mini h3 {
+  margin: 0;
+  font-size: calc(var(--fs) * 0.85);
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.legend {
+  list-style: none;
+  display: flex;
+  gap: 1.6vmin;
+  margin: 0;
+  padding: 0;
+  font-size: calc(var(--fs) * 0.85);
+  color: var(--text-secondary);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.6vmin;
+}
+
+.legend i {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.chart-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+#chart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mémoire / disques / réseau */
+.details {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: var(--gap);
+  flex: none;
+}
+
+.details.no-agent {
+  opacity: 0.4;
+}
+
+.mini {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 0.8);
+  padding: clamp(6px, 1.4vmin, 12px) clamp(8px, 1.8vmin, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vmin;
+  min-width: 0;
+  height: clamp(64px, 14vmin, 104px);
+  overflow: hidden;
+}
+
+.big {
+  font-size: calc(var(--fs) * 1.45);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bar {
+  flex: 1;
+  height: 7px;
+  max-height: 7px;
+  min-height: 7px;
+  background: var(--track);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 600ms ease;
+}
+
+.bar-fill[data-level='warning'] {
+  background: var(--warning);
+}
+
+.bar-fill[data-level='critical'] {
+  background: var(--critical);
+}
+
+.disks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vmin;
+}
+
+.disk {
+  display: flex;
+  align-items: center;
+  gap: 1vmin;
+  font-size: calc(var(--fs) * 0.85);
+  color: var(--text-secondary);
+}
+
+.disk-name {
+  min-width: 2.4em;
+  max-width: 5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.disk-free {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.net {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vmin;
+  font-size: calc(var(--fs) * 1.3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.net span {
+  display: inline-block;
+  width: 1.4em;
+  color: var(--text-muted);
+}
+
+.net b {
+  font-weight: 400;
+}
+
+/* Widgets étroits : cartes empilées */
+@media (max-aspect-ratio: 9/10) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .details {
+    grid-template-columns: 1fr 1fr;
+  }
+  .details .mini:nth-child(2) {
+    grid-column: span 2;
+    order: 3;
+  }
+}
+
+/* Widgets bas : on retire l'historique, puis les détails */
+@media (max-height: 360px) {
+  .history {
+    display: none !important;
+  }
+}
+
+@media (max-height: 260px) {
+  .details,
+  .top {
+    display: none !important;
+  }
+}

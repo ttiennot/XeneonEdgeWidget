@@ -1,0 +1,36 @@
+{
+  "en": {
+    "translation": {
+      "Edge Deck": "Edge Deck",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Page (empty = all pages)": "Page (empty = all pages)",
+      "Columns (0 = from config)": "Columns (0 = from config)",
+      "Rows (0 = from config)": "Rows (0 = from config)",
+      "Show labels": "Show labels",
+      "Show page tabs": "Show page tabs",
+      "Accent color": "Accent color",
+      "Background color": "Background color",
+      "Text color": "Text color",
+      "Buttons": "Buttons",
+      "Appearance": "Appearance",
+      "Buttons are defined in config.json of the Xeneon Edge Widget agent.": "Buttons are defined in config.json of the Xeneon Edge Widget agent."
+    }
+  },
+  "fr": {
+    "translation": {
+      "Edge Deck": "Edge Deck",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Page (empty = all pages)": "Page (vide = toutes les pages)",
+      "Columns (0 = from config)": "Colonnes (0 = selon config.json)",
+      "Rows (0 = from config)": "Lignes (0 = selon config.json)",
+      "Show labels": "Afficher les libellés",
+      "Show page tabs": "Afficher les onglets de pages",
+      "Accent color": "Couleur d'accent",
+      "Background color": "Couleur de fond",
+      "Text color": "Couleur du texte",
+      "Buttons": "Boutons",
+      "Appearance": "Apparence",
+      "Buttons are defined in config.json of the Xeneon Edge Widget agent.": "Les boutons se définissent dans config.json de l'agent Xeneon Edge Widget."
+    }
+  }
+}

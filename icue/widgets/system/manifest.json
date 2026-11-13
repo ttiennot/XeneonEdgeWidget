@@ -1,0 +1,14 @@
+{
+  "author": "ttiennot",
+  "id": "com.ttiennot.xeneonedge.system",
+  "name": "Edge System",
+  "description": "Temperatures et utilisation CPU / GPU (capteurs iCUE), historique, memoire, disques et reseau (agent Xeneon Edge Widget).",
+  "version": "1.0.0",
+  "preview_icon": "resources/icon.svg",
+  "min_app_version": "5.47",
+  "min_framework_version": "1.0.0",
+  "os": [{ "platform": "windows" }],
+  "supported_devices": [{ "type": "dashboard_lcd" }],
+  "required_plugins": ["widgetbuilder.sensorsdataprovider:Sensors:1.0"],
+  "permissions": [{ "type": "url", "domain": "localhost", "port": 17890 }]
+}

@@ -1,0 +1,54 @@
+{
+  "en": {
+    "translation": {
+      "Edge System": "Edge System",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Data source": "Data source",
+      "Automatic (iCUE sensors + agent)": "Automatic (iCUE sensors + agent)",
+      "iCUE sensors only": "iCUE sensors only",
+      "Agent only (LibreHardwareMonitor)": "Agent only (LibreHardwareMonitor)",
+      "CPU temperature": "CPU temperature",
+      "CPU load": "CPU load",
+      "GPU temperature": "GPU temperature",
+      "GPU load": "GPU load",
+      "Show clock": "Show clock",
+      "Show usage history": "Show usage history",
+      "Show memory, disks and network": "Show memory, disks and network",
+      "Hot threshold": "Hot threshold",
+      "Critical threshold": "Critical threshold",
+      "Accent color": "Accent color",
+      "Background color": "Background color",
+      "Text color": "Text color",
+      "Sensors": "Sensors",
+      "Display": "Display",
+      "Appearance": "Appearance",
+      "Empty sensors are read from the Xeneon Edge Widget agent when it runs.": "Empty sensors are read from the Xeneon Edge Widget agent when it runs."
+    }
+  },
+  "fr": {
+    "translation": {
+      "Edge System": "Edge Système",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Data source": "Source des données",
+      "Automatic (iCUE sensors + agent)": "Automatique (capteurs iCUE + agent)",
+      "iCUE sensors only": "Capteurs iCUE uniquement",
+      "Agent only (LibreHardwareMonitor)": "Agent uniquement (LibreHardwareMonitor)",
+      "CPU temperature": "Température CPU",
+      "CPU load": "Charge CPU",
+      "GPU temperature": "Température GPU",
+      "GPU load": "Charge GPU",
+      "Show clock": "Afficher l'horloge",
+      "Show usage history": "Afficher l'historique d'utilisation",
+      "Show memory, disks and network": "Afficher mémoire, disques et réseau",
+      "Hot threshold": "Seuil « chaud »",
+      "Critical threshold": "Seuil « critique »",
+      "Accent color": "Couleur d'accent",
+      "Background color": "Couleur de fond",
+      "Text color": "Couleur du texte",
+      "Sensors": "Capteurs",
+      "Display": "Affichage",
+      "Appearance": "Apparence",
+      "Empty sensors are read from the Xeneon Edge Widget agent when it runs.": "Les capteurs laissés vides sont lus depuis l'agent Xeneon Edge Widget s'il est lancé."
+    }
+  }
+}

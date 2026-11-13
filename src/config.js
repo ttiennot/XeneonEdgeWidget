@@ -6,6 +6,8 @@ const path = require('path');
 const EXAMPLE_PATH = path.join(__dirname, '..', 'config.example.json');
 
 const DEFAULTS = {
+  mode: 'window',
+  agent: { enabled: true, port: 17890 },
   display: { target: 'auto', alwaysOnTop: false, zoom: 1 },
   autostart: false,
   layout: { panels: ['deck', 'stats', 'discord'], widths: [1, 1.3, 1.1] },
@@ -58,6 +60,8 @@ function normalize(config) {
   cfg.layout.panels = (cfg.layout.panels || []).filter((p) => known.has(p));
   if (cfg.layout.panels.length === 0) cfg.layout.panels = ['stats'];
   cfg.stats.intervalMs = Math.max(250, Number(cfg.stats.intervalMs) || 1000);
+  cfg.mode = cfg.mode === 'agent' ? 'agent' : 'window';
+  cfg.agent.port = Math.min(65535, Math.max(1, Number(cfg.agent.port) || 17890));
   return cfg;
 }
 

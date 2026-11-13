@@ -1,0 +1,36 @@
+{
+  "en": {
+    "translation": {
+      "Edge Discord": "Edge Discord",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Display": "Display",
+      "Web client": "Web client",
+      "Server widget": "Server widget",
+      "Start page (web client)": "Start page (web client)",
+      "Open automatically": "Open automatically",
+      "Server ID (server widget)": "Server ID (server widget)",
+      "Accent color": "Accent color",
+      "Background color": "Background color",
+      "Discord": "Discord",
+      "Appearance": "Appearance",
+      "Web client: full Discord, log in once. Server widget: online members and voice channels of a server (enable it in Server Settings, Widget).": "Web client: full Discord, log in once. Server widget: online members and voice channels of a server (enable it in Server Settings, Widget)."
+    }
+  },
+  "fr": {
+    "translation": {
+      "Edge Discord": "Edge Discord",
+      "Xeneon Edge Widget": "Xeneon Edge Widget",
+      "Display": "Affichage",
+      "Web client": "Client web",
+      "Server widget": "Widget de serveur",
+      "Start page (web client)": "Page d'accueil (client web)",
+      "Open automatically": "Ouvrir automatiquement",
+      "Server ID (server widget)": "ID du serveur (widget de serveur)",
+      "Accent color": "Couleur d'accent",
+      "Background color": "Couleur de fond",
+      "Discord": "Discord",
+      "Appearance": "Apparence",
+      "Web client: full Discord, log in once. Server widget: online members and voice channels of a server (enable it in Server Settings, Widget).": "Client web : Discord complet, connexion une seule fois. Widget de serveur : membres en ligne et salons vocaux d'un serveur (à activer dans Paramètres du serveur > Widget)."
+    }
+  }
+}

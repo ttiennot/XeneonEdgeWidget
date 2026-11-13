@@ -1,0 +1,72 @@
+:root {
+  --accent: #5865f2;
+}
+
+.dc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3vmin;
+  padding: 5vmin;
+  text-align: center;
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent) 45%, transparent) 0%, transparent 65%), var(--bg);
+}
+
+.dc[hidden] {
+  display: none;
+}
+
+.logo {
+  width: clamp(48px, 18vmin, 140px);
+  color: #fff;
+  filter: drop-shadow(0 6px 24px color-mix(in srgb, var(--accent) 70%, transparent));
+}
+
+.logo svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.help {
+  margin: 0;
+  max-width: 46ch;
+  font-size: clamp(12px, 2.8vmin, 18px);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.open {
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: clamp(13px, 3vmin, 20px);
+  padding: 1.6vmin 4vmin;
+  cursor: pointer;
+}
+
+.open[hidden] {
+  display: none;
+}
+
+.open:active {
+  transform: scale(0.96);
+}
+
+.server {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #313338;
+}
+
+.server[hidden] {
+  display: none;
+}
